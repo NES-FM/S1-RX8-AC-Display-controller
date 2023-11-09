@@ -23,9 +23,16 @@ struct buttonState {
     btn_enum longPushButton;
 };
 
-enum acModes {
-    feet,
-    feet_demist,
-    face,
-    face_feet
+struct acShow {
+    uint8_t fanSpeed;
+    uint8_t tempDigits[3];
+    bool displayAmbient;
+    bool stateAuto;
+    bool stateAc;
+    bool stateEco;
+    bool modeFrontDemist;
+    bool modeRearDemist;
+    bool modeRecirculate;
+    bool modeFeet;
+    bool modeFace;
 };

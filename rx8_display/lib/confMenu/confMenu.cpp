@@ -6,6 +6,9 @@ void confMenu::shortButtonPress(btn_enum shortButton) {}
 //TODO: Implement menu long button press
 void confMenu::longButtonPress(btn_enum longButton) {}
 
+//TODO: Implement menu rotary switches
+void confMenu::changeRotary(rotationDir fan, rotationDir temp) {}
+
 //TODO: ConfMenu Activate
 void confMenu::activate() {
     // confMode = true;

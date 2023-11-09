@@ -55,12 +55,7 @@ void setup() {
   pinMode(mode1, OUTPUT);
   pinMode(ssPin, OUTPUT);
 
-  //Control panel LED's
-  pinMode(rearDemistLED, OUTPUT);
-  pinMode(frontDemistLED, OUTPUT);
-  pinMode(freshAirLED, OUTPUT);
-  pinMode(autoLED, OUTPUT);
-  pinMode(AirConLED, OUTPUT);
+
 
   // Real time clock
   rtc.begin();
@@ -73,7 +68,6 @@ void setup() {
 
   SPI.begin();
   SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE3)); //I couldn't see a defined max speed in the NJU6623 datasheet, 10Meg is quite an increase on the original 9600, so need to monitor incase this is not stable.
- // Serial.begin (115200, SERIAL_8N1);
   
 
   delay(300);
@@ -83,7 +77,6 @@ void setup() {
 
 void loop()
 {
-  checkAndSendHardwareControl();
   calculateTime();
 
   if (!confMode)
@@ -91,23 +84,10 @@ void loop()
   
     if (acAmpMessageToProcess && acAmpRxChanged || minuteChange)
     {
-      acAmpLedFuntions(acAmpOn);
-      if (acAmpOn)
-      {
-        acAmpRecievedStatus();
-
-        acAmpProcessAC();
-        acAmpProcessFan();
-        acAmpProcessTemp();
-        acAmpProcessModeControls();
-      }
-
       iconArrayCheckThenSet();
       sevenSegmentCheckThenSet();
       populateFixedLcdDisplay(welcome);
       minuteChange = false;
-      acAmpRxChanged = false;
-      acAmpMessageToProcess = false;
     }
   }
   else
@@ -119,39 +99,6 @@ void loop()
     iconArrayCheckThenSet();
   }
 }
-
-
-/*****************************************************************
-// acAmp inbound
-*****************************************************************/
-
-
-// Need to set leds based on acAmp button state, we are directly manipulating the ports.
-void acAmpLedFuntions(bool _acAmpOn)
-{
-  if (_acAmpOn)
-  {
-    PORTC = (!bitRead(acAmpRxData[4], 6)) ? PORTC |= (1 << PC5) : PORTC &= ~(1 << PC5); // FrontDemist
-    PORTA = (!bitRead(acAmpRxData[4], 5)) ? PORTA |= (1 << PA4) : PORTA &= ~(1 << PA4); // RearDemist
-    PORTC = (bitRead(acAmpRxData[4], 3)) ? PORTC &= ~(1 << PC7) : PORTC |= (1 << PC7); // Fresh
-    PORTA = (bitRead(acAmpRxData[4], 3)) ? PORTA |= (1 << PA6) : PORTA &= ~(1 << PA6); // Recirc
-    PORTC = (!bitRead(acAmpRxData[3], 6)) ? PORTC |= (1 << PC3) : PORTC &= ~(1 << PC3); // Auto
-    PORTA = (!bitRead(acAmpRxData[3], 5)) ? PORTA |= (1 << PA5) : PORTA &= ~(1 << PA5); // A/C
-  }
-  else // When the acAmp is off, We turn off all the LED's.
-  {
-    PORTC &= ~(1 << PC5);
-    PORTA &= ~(1 << PA4);
-    PORTC &= ~(1 << PC7);
-    PORTA &= ~(1 << PA6);
-    PORTC &= ~(1 << PC3);
-    PORTA &= ~(1 << PA5);
-  }
-}
-
-
-
-
 
 
 /*****************************************************************
@@ -421,28 +368,7 @@ void minuteCalculate(byte _currentMinute)
 
 
 
-//Define temperature control mapping - The F calculation incomplete
-void acAmpProcessTemp()
-{
-  byte currentTemp = 0;
-  byte displayOrder = 0;
-  byte fTemp = 0;
-  unsigned int tempOrder[3] = {0x01, 0x04, 0x02};
-  for (byte i = 0; i <= 2; i++)
-  {
-    displayOrder = tempOrder[i];
 
-    for (byte j = 0; j <= 3; j++)
-    {
-      bitWrite(currentTemp, j, bitRead(acAmpRxData[i + 1], j));
-    }
-
-    if (minuteChange || acAmpMessageToProcess) //as the temp is via seven segment, we need to make sure we update if the time changes.
-    {
-      sevenSegmentCalculate(displayOrder, currentTemp); //write to the sevenSegment array
-    }
-  }
-}
 
 
 void updateClockTime()

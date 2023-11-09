@@ -8,6 +8,7 @@ class confMenu {
         bool confMode = false;
         void shortButtonPress(btn_enum shortButton);
         void longButtonPress(btn_enum longButton);
+        void changeRotary(rotationDir fan, rotationDir temp);
 
         void activate();
         void deactivate();

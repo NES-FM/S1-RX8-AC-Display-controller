@@ -13,6 +13,14 @@ void buttonPanel::init()
     pinMode(fanInTwo, INPUT_PULLUP);
     pinMode(tempInOne, INPUT_PULLUP);
     pinMode(tempInTwo, INPUT_PULLUP);
+
+    // Control panel LED's
+    pinMode(rearDemistLED, OUTPUT);
+    pinMode(frontDemistLED, OUTPUT);
+    pinMode(freshAirLED, OUTPUT);
+    pinMode(reCircLED, OUTPUT);
+    pinMode(autoLED, OUTPUT);
+    pinMode(AirConLED, OUTPUT);
 }
 
 void buttonPanel::tick()
@@ -28,6 +36,28 @@ void buttonPanel::tick()
         checkTempRotation();
         checkPushedButton();
         last_get_buttons = millis();
+    }
+}
+
+void buttonPanel::setLeds(bool acAmpOn, acShow leds)
+{
+    if (acAmpOn)
+    {
+        digitalWrite(frontDemistLED, leds.modeFrontDemist);
+        digitalWrite(rearDemistLED, leds.modeRearDemist);
+        digitalWrite(freshAirLED, !leds.modeRecirculate);
+        digitalWrite(reCircLED, leds.modeRecirculate);
+        digitalWrite(autoLED, leds.stateAuto);
+        digitalWrite(AirConLED, leds.stateAc);
+    }
+    else // When the acAmp is off, We turn off all the LED's.
+    {
+        digitalWrite(frontDemistLED, LOW);
+        digitalWrite(rearDemistLED, LOW);
+        digitalWrite(freshAirLED, LOW);
+        digitalWrite(reCircLED, LOW);
+        digitalWrite(autoLED, LOW);
+        digitalWrite(AirConLED, LOW);
     }
 }
 

@@ -1,5 +1,17 @@
 #include "main.hpp"
 
+
+/*******************
+ * TODO list:
+ * - Disp
+ *   - icons
+ *   - clock
+ *   - text
+ *   - temp
+ * - rtc
+*/
+
+
 buttonPanel buttons;
 confMenu conf;
 acAmp ac;
@@ -12,19 +24,30 @@ void setup()
 
 void loop()
 {
-    // Always initializing with default values, so that only if buttons changed different data is there
-    ac.setDefault();
-
     // Get data from AC
     ac.tick();
 
     // Get State of Center Button Panel
     buttons.tick();
-    // buttons.lastTickButtonState;
+    shortButtonAction(buttons.lastTickButtonState.shortPushButton);
+    longButtonAction(buttons.lastTickButtonState.longPushButton);
+    if (conf.confMode)
+        conf.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
+    else
+        ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
+
+    // Get Time
 
     // Set LEDs
+    buttons.setLeds(ac.acAmpOn, ac.iconsLeds);
+
+    // Conf Menu
 
     // Set Display
+    if (ac.displayChanged /*|| time.changed*/)
+    {
+
+    }
 
     // Send Button data to AC
     if (!conf.confMode)
@@ -60,6 +83,8 @@ void longButtonAction(btn_enum longButton) {
             case AirSource:
                 break;
             case Off:
+                break;
+            default:
                 break;
         }
     }
