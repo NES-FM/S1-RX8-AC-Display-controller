@@ -35,4 +35,12 @@ struct acShow {
     bool modeRecirculate;
     bool modeFeet;
     bool modeFace;
+    bool ampOn;
+    bool ampRunning;
+};
+
+struct timeObj {
+    uint8_t prevMinute;
+    uint8_t curMinute;
+    uint8_t curHour;
 };

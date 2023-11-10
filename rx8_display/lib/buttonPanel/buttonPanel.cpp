@@ -39,9 +39,9 @@ void buttonPanel::tick()
     }
 }
 
-void buttonPanel::setLeds(bool acAmpOn, acShow leds)
+void buttonPanel::setLeds(acShow leds)
 {
-    if (acAmpOn)
+    if (leds.ampOn)
     {
         digitalWrite(frontDemistLED, leds.modeFrontDemist);
         digitalWrite(rearDemistLED, leds.modeRearDemist);

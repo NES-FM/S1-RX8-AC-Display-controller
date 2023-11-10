@@ -9,7 +9,7 @@ class buttonPanel {
         buttonPanel() {};
         void init();
         void tick();
-        void setLeds(bool acAmpOn, acShow leds);
+        void setLeds(acShow leds);
 
         buttonState lastTickButtonState;
 

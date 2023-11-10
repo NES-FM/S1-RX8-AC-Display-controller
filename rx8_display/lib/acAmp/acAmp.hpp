@@ -17,7 +17,6 @@ class acAmp {
 
         acShow iconsLeds;
 
-        bool acAmpOn = false;
         bool displayChanged = false;
 
     private:
@@ -32,7 +31,6 @@ class acAmp {
         unsigned int receivedByte;
         unsigned int rxData[6]; //Where we keep our inbound data.
         unsigned long lastRx;
-        bool acAmpRunning = false;
         bool rxChanged = true;
         bool messageToProcess = false;
 

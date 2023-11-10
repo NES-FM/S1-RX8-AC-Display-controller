@@ -11,7 +11,7 @@ void acAmp::tick()
     getSerialData();
     if (messageToProcess)
     {
-        if (acAmpOn)
+        if (iconsLeds.ampOn)
         {
             interpretStatusByte();
             interpretAcState();
@@ -124,7 +124,7 @@ void acAmp::interpretStatusByte() // Based on the first byte of our inbound mess
 {
     if (rxData[0] == 0x0F) // we are off apart from showing Mode settings
     {
-        acAmpRunning = false;
+        iconsLeds.ampRunning = false;
     }
 
     ambientTemp = (rxData[0] == 0x0E) ? true : false; // 0D Normal || 0E Ambient
@@ -168,6 +168,7 @@ void acAmp::interpretModeSettings()
     }
 
     iconsLeds.modeRearDemist = !bitRead(rxData[4], 5);
+    iconsLeds.modeRecirculate = bitRead(rxData[4], 3);
 }
 
 void acAmp::interpretFanSpeed() // Find the current fan speed
@@ -180,12 +181,12 @@ void acAmp::interpretFanSpeed() // Find the current fan speed
     if (acAmpFanSpeed <= 6) // See Wiki
     {
         acAmpFanSpeed++;
-        acAmpRunning = true;
+        iconsLeds.ampRunning = true;
     }
     else
     {
         acAmpFanSpeed = 0;
-        acAmpRunning = false;
+        iconsLeds.ampRunning = false;
     }
 
     iconsLeds.fanSpeed = acAmpFanSpeed;
@@ -217,7 +218,7 @@ void acAmp::interpretTemp()
 void acAmp::getSerialData()
 {
     if (Serial2.available() > 0)
-    { // acAmpOn = true;
+    { // iconsLeds.ampOn = true;
         lastRx = millis();
         receivedByte = Serial2.read();
         if (receivedByte == 0x0F || receivedByte == 0x0D || receivedByte == 0x0E) // We don't know the last byte but we know the first byte will be one of these
@@ -239,7 +240,7 @@ void acAmp::getSerialData()
 
                 if (curRxByte == 5) // we know the length of the data transfer. If we knew how to calculate the checksum we could validate received data but for now we assume it's correct.
                 {
-                    acAmpOn = rxData[4] != 0xFF; // Stops icon flicker at startup by pretending the ac is off until everything is settled
+                    iconsLeds.ampOn = rxData[4] != 0xFF; // Stops icon flicker at startup by pretending the ac is off until everything is settled
                     messageToProcess = true;
                     curRxByte = 0;
                 }
@@ -250,7 +251,7 @@ void acAmp::getSerialData()
     {
         if (millis() - lastRx > 30) // If there is no data we assume the A\C amplifier is off and we run 1 cycle to clear the display. This is easier than having to monitor assorted vehicle power states.
         {
-            acAmpOn = false;
+            iconsLeds.ampOn = false;
             messageToProcess = true;
             rxChanged = true;
         }

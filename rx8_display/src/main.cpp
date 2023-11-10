@@ -3,23 +3,21 @@
 
 /*******************
  * TODO list:
- * - Disp
- *   - icons
- *   - clock
- *   - text
- *   - temp
  * - rtc
+ * - conf menu
 */
 
 
 buttonPanel buttons;
 confMenu conf;
 acAmp ac;
+display disp;
 
 void setup()
 {
     buttons.init();
     ac.init();
+    disp.init();
 }
 
 void loop()
@@ -39,14 +37,36 @@ void loop()
     // Get Time
 
     // Set LEDs
-    buttons.setLeds(ac.acAmpOn, ac.iconsLeds);
-
-    // Conf Menu
+    buttons.setLeds(ac.iconsLeds);
 
     // Set Display
-    if (ac.displayChanged /*|| time.changed*/)
+    if (!conf.confMode)
     {
+        if (ac.displayChanged /*|| time.changed*/)
+        {
+            disp.setAcIcons(ac.iconsLeds);
+            //disp.setTime(...);
 
+            disp.sendIcons();
+            disp.sendSevenSeg();
+
+            ac.displayChanged = false;
+            // time.changed = false;
+        }
+    }
+    else
+    {
+        //TODO Conf mode
+        /*
+        conf.menuTick();
+        if (conf.displayChanged || time.changed)
+        {
+            disp.setAcIcons(conf.icons);
+            disp.setTime(time)
+            disp.sendIcons();
+            disp.sendSevenSeg();
+        }
+        */
     }
 
     // Send Button data to AC
