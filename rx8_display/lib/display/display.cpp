@@ -340,8 +340,6 @@ void display::writeToCharDisp(String _lcdInput)
         }
     }
 
-    byte _start = 0x80;
-
     PORTB &= ~(1 << PB0);
     SPI.transfer(0x80);
     PORTB |= (1 << PB0);
@@ -396,7 +394,6 @@ void display::lcdDisplayPopulateCgramAddress(byte _CgramAddress) // Set the CGRa
     SPI.transfer(_CgramAddress);
     PORTB |= (1 << PB0);
     PORTL &= ~(1 << PL1);
-    unsigned long time01 = millis();
     for (byte i = 0; i < 7; i++) // populate from the Array
     {
         PORTL |= (1 << PL0);

@@ -1,10 +1,3 @@
-#include <Wire.h>
-//#include "DS3231.h"
-#include "RTClib.h"
-
-RTC_DS1307 rtc;
-//RTC_DS3231 rtc;
-
 
 
 // Menu
@@ -22,83 +15,19 @@ bool inMenu = false;
 
 
 //Data processing
-byte previousMinute;
-unsigned long nowTimeCycle;
-byte nowHour = 0;
-byte nowMinute = 0;
-bool minuteChange = false;
+
 bool acAmpCentigrade = true;
-bool clock24Hour = true; //false = 12 hour clock
-
-
-
 
 
 void setup() {
   
 
-
-
-  // Real time clock
-  rtc.begin();
-  //rtc.adjust(DateTime(2014, 1, 21, 4, 33, 0)); //a fixed time
-  // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // your PC's time. ***** You may need to comment out after 1 upload to set the time - see wiki*******
-  DateTime now = rtc.now();
-  nowHour = now.hour();
-  nowMinute = now.minute();
-
-
 }
 
 void loop()
 {
-  calculateTime();
-
-
-
 
 }
-
-
-
-
-
-
-
-
-
-/*****************************************************************
-  // Time and temp
-*****************************************************************/
-
-void calculateTime()
-{
-  if (millis() - nowTimeCycle >= 10000 || confMode) // 'DateTime now' takes over 1 milliSecond to return a result, so we don't run it every cycle.
-  {
-    DateTime now = rtc.now();
-    nowTimeCycle = millis();
-    nowHour = now.hour();
-    nowMinute = now.minute();
-  }
-
-  if (!clock24Hour && nowHour > 12) // 12 or 24 hour, for now set in main controls via clock24Hour
-  {
-    currentHour = nowHour - 12;
-  }
-  else
-  {
-    currentHour = nowHour;
-  }
-
-  currentMinute = nowMinute;
-
-
-
-  //If the hour or minute are continually updating the other icons flicker\vanish as they are not set constantly, so we flag a minute change to manage display updates.
-  minuteChange = (previousMinute != currentMinute) ? true : false;
-  previousMinute = currentMinute;
-}
-
 
 
 

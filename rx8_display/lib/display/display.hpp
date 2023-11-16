@@ -25,7 +25,7 @@ class display {
         timeObj time;
 
         const String defaultText = "Mazda RX-8";
-        
+
         void setDefaultText();
         void calculateIcons();
         void iconCalculateFan(byte _fanSpeed);

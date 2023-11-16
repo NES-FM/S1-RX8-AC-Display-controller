@@ -3,7 +3,6 @@
 
 /*******************
  * TODO list:
- * - rtc
  * - conf menu
 */
 
@@ -12,10 +11,12 @@ buttonPanel buttons;
 confMenu conf;
 acAmp ac;
 display disp;
+clock time;
 
 void setup()
 {
     buttons.init();
+    time.init();
     ac.init();
     disp.init();
 }
@@ -35,6 +36,7 @@ void loop()
         ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
 
     // Get Time
+    time.tick(conf.twentyFourHour, conf.confMode);
 
     // Set LEDs
     buttons.setLeds(ac.iconsLeds);
@@ -42,16 +44,16 @@ void loop()
     // Set Display
     if (!conf.confMode)
     {
-        if (ac.displayChanged /*|| time.changed*/)
+        if (ac.displayChanged || time.t.minuteChange)
         {
             disp.setAcIcons(ac.iconsLeds);
-            //disp.setTime(...);
+            disp.setTime(time.t);
 
             disp.sendIcons();
             disp.sendSevenSeg();
 
             ac.displayChanged = false;
-            // time.changed = false;
+            time.t.minuteChange = false;
         }
     }
     else
@@ -59,10 +61,11 @@ void loop()
         //TODO Conf mode
         /*
         conf.menuTick();
-        if (conf.displayChanged || time.changed)
+        if (conf.displayChanged || time.t.minuteChange)
         {
             disp.setAcIcons(conf.icons);
-            disp.setTime(time)
+            disp.setTime(time.t);
+            disp.writeToCharDisp(conf.outputText);
             disp.sendIcons();
             disp.sendSevenSeg();
         }

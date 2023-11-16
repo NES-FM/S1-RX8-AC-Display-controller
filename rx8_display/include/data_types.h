@@ -43,4 +43,5 @@ struct timeObj {
     uint8_t prevMinute;
     uint8_t curMinute;
     uint8_t curHour;
+    bool minuteChange;
 };

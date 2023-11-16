@@ -6,6 +6,8 @@
 class confMenu {
     public:
         bool confMode = false;
+        bool twentyFourHour = true;
+        
         void shortButtonPress(btn_enum shortButton);
         void longButtonPress(btn_enum longButton);
         void changeRotary(rotationDir fan, rotationDir temp);
