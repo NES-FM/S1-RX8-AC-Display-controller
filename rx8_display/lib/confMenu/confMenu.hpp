@@ -5,14 +5,19 @@
 
 class confMenu {
     public:
-        bool confMode = false;
-        bool twentyFourHour = true;
-        
+        void activate();
+        void deactivate();
+
+        void menuTick();
+
         void shortButtonPress(btn_enum shortButton);
         void longButtonPress(btn_enum longButton);
         void changeRotary(rotationDir fan, rotationDir temp);
 
-        void activate();
-        void deactivate();
+        bool confMode = false;
+        bool twentyFourHour = true;
+        bool displayChanged = false;
+        acShow icons;
+        String outputText;
     private:
 };

@@ -58,8 +58,6 @@ void loop()
     }
     else
     {
-        //TODO Conf mode
-        /*
         conf.menuTick();
         if (conf.displayChanged || time.t.minuteChange)
         {
@@ -69,7 +67,6 @@ void loop()
             disp.sendIcons();
             disp.sendSevenSeg();
         }
-        */
     }
 
     // Send Button data to AC
