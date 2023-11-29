@@ -1,6 +1,5 @@
 #include "logger.h"
 
-#ifdef debug
 char _logger_ser_buf[LOGGER_BUFFLEN];
 unsigned int _logger_ser_buf_idx = 0;
 
@@ -52,20 +51,6 @@ void logger_log_formatted_string(const char *format, ...)
     Serial.print(str); // INTENDED
     va_end(args);
 }
-#else
-void logger_init()
-{
-
-}
-String logger_tick()
-{
-    return "";
-}
-void logger_log_formatted_string(const char *format, ...)
-{
-
-}
-#endif
 
 const char * pathToFileName(const char * path)
 {

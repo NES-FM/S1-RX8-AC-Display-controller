@@ -16,6 +16,18 @@ const char * pathToFileName(const char * path);
 #define log_inline(format, ...) logger_log_formatted_string(format, ##__VA_ARGS__)
 #define log_inline_end() logger_log_formatted_string("\r\n")
 
+#ifdef debug
+#define debugln(format, ...) logger_log_formatted_string(LOGGER_LOG_FORMAT(format), ##__VA_ARGS__)
+#define debug_inline_begin() logger_log_formatted_string(LOGGER_LOG_FORMAT_INLINE(""))
+#define debug_inline(format, ...) logger_log_formatted_string(format, ##__VA_ARGS__)
+#define debug_inline_end() logger_log_formatted_string("\r\n")
+#else
+#define debugln(format, ...)
+#define debug_inline_begin()
+#define debug_inline(format, ...)
+#define debug_inline_end()
+#endif
+
 void logger_init();
 String logger_tick();
 void logger_log_formatted_string(const char *format, ...);

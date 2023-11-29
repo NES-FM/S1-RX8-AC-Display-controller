@@ -34,21 +34,21 @@ void display::sendSevenSeg()
 /*****************************************************************
   // Icon display
   // For the icon displays we calculate a binary value for the 5 seperate registers with simple addition in hex
-  //  Position\Register 0x01,         0x02,     0x04,                     0x08,         0x10
-  // int icon90 = [00]; mM R/H lower, mM lower, fullstop between Minutes, Mm R/H lower, Mn lower
-  // int icon91 - [01]; mM L/H upper, mM Upper, mM R/H upper,             mM centre,    L/H vertical divider
-  // int icon92 = [02]; Mm L/H upper, Mn upper, Mm R/H upper,             Mm centre,    mM L/H lower
-  // int icon93 = [03]; not used, not used, HH:MM Divider, Mm L/H lower, CD IN
-  // int icon94 = [04]; not used, not used, not used, not used, MD IN
-  // int icon95 = [05]; Dolby Logo, not used, not used, not used, ST
-  // int icon96 = [06]; AF, AMB, Thermo symbol, degF, degC
-  // int icon97 = [07]; Car logo (aircon), PTY, fresh air Arrow, recirculate Arrow, AUTO
-  // int icon98 = [08]; fan4, RPT, fan5, A\C, ECO
-  // int icon99 = [09]; not used, Fan base, fan1, fan2, fan3
-  // int icon9A = [10]; Auto-M, TP, TA, RDM, Full Stop between DDRAM #10 & #11
-  // int icon9B = [11]; not used, fan7, min/sec prime marks, R/H vertical divider, Full Stop between DDRAM #11 & #12
-  // int icon9C = [12]; Seated Man, Front Demist, Down\Feet Arrow, not used, not used
-  // int icon9D = [13]; not used, Temp Decimal, Face Arrow, fan6, mid display colon,
+  //  Position\Register 0x01,              0x02,     0x04,                     0x08,         0x10
+  // int icon90 = [00]; mM R/H lower,      mM lower, fullstop between Minutes, Mm R/H lower, Mn lower
+  // int icon91 - [01]; mM L/H upper,      mM Upper, mM R/H upper,             mM centre,    L/H vertical divider
+  // int icon92 = [02]; Mm L/H upper,      Mn upper, Mm R/H upper,             Mm centre,    mM L/H lower
+  // int icon93 = [03]; not used,          not used, HH:MM Divider,            Mm L/H lower, CD IN
+  // int icon94 = [04]; not used,          not used, not used,                 not used,     MD IN
+  // int icon95 = [05]; Dolby Logo,        not used, not used,                 not used,     ST
+  // int icon96 = [06]; AF,                AMB,      Thermo symbol,            degF,         degC
+  // int icon97 = [07]; Car logo (aircon), PTY,      fresh air Arrow,     recirculate Arrow, AUTO
+  // int icon98 = [08]; fan4,              RPT,      fan5,                     A\C,          ECO
+  // int icon99 = [09]; not used,          Fan base, fan1,                     fan2,         fan3
+  // int icon9A = [10]; Auto-M,            TP,       TA,                       RDM,          Full Stop between DDRAM #10 & #11
+  // int icon9B = [11]; not used,          fan7,   min/sec prime marks, R/H vertical divider, Full Stop between DDRAM #11 & #12
+  // int icon9C = [12]; Seated Man,    Front Demist, Down\Feet Arrow,         not used,      not used
+  // int icon9D = [13]; not used,      Temp Decimal, Face Arrow,              fan6,          mid display colon,
 *****************************************************************/
 
 void display::setDefaultText()
@@ -61,10 +61,12 @@ void display::calculateIcons()
     minuteCalculate();
     iconCalculateFan(acIcons.fanSpeed);
 
+    // Statics
     iconArray[1] += 0x10;  // Vertical divider R/H
     iconArray[3] += 0x04;  // HH:MM Divider
     iconArray[11] += 0x08; // Vertical divider L/H
 
+    // AC Icons
     if (acIcons.ampOn)
     {
         // The seated man
@@ -105,6 +107,38 @@ void display::calculateIcons()
         if (acIcons.stateEco)
             iconArray[8] += 0x10;
     }
+
+    // Midsection Icons
+    if (midIcons.CD_IN)
+        iconArray[3] += 0x10;
+    if (midIcons.MD_IN)
+        iconArray[4] += 0x10;
+    if (midIcons.Dolby)
+        iconArray[5] += 0x01;
+    if (midIcons.ST)
+        iconArray[5] += 0x10;
+    if (midIcons.AF)
+        iconArray[6] += 0x01;
+    if (midIcons.PTY)
+        iconArray[7] += 0x02;
+    if (midIcons.RPT)
+        iconArray[8] += 0x02;
+    if (midIcons.Auto_M)
+        iconArray[10] += 0x01;
+    if (midIcons.TP)
+        iconArray[10] += 0x02;
+    if (midIcons.TA)
+        iconArray[10] += 0x04;
+    if (midIcons.RDM)
+        iconArray[10] += 0x08;
+    if (midIcons.fullstop_char_10_11)
+        iconArray[10] += 0x10;
+    if (midIcons.min_sec_prime_marks)
+        iconArray[11] += 0x04;
+    if (midIcons.fullstop_char_11_12)
+        iconArray[11] += 0x10;
+    if (midIcons.mid_section_colon)
+        iconArray[13] += 0x10;
 }
 
 // Set fan speed icons including the base outline

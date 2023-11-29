@@ -40,3 +40,21 @@ struct timeObj {
     uint8_t curHour;
     bool minuteChange;
 };
+
+struct midsectionIcons {
+    bool CD_IN;
+    bool MD_IN;
+    bool ST;
+    bool Dolby;
+    bool AF;
+    bool PTY;
+    bool RPT;
+    bool RDM;
+    bool TA;
+    bool TP;
+    bool Auto_M;
+    bool mid_section_colon;
+    bool fullstop_char_10_11;
+    bool fullstop_char_11_12;
+    bool min_sec_prime_marks;
+};

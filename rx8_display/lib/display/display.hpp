@@ -10,6 +10,7 @@ class display {
         display() {}
         void init();
         inline void setAcIcons(acShow ic) { acIcons = ic; }
+        inline void setMidIcons(midsectionIcons mi) { midIcons = mi; }
         inline void setTime(timeObj t) { time = t; }
         void sendIcons();
         void sendSevenSeg();
@@ -22,6 +23,7 @@ class display {
         uint8_t sevenSegmentArray[7] = {0};
 
         acShow acIcons;
+        midsectionIcons midIcons;
         timeObj time;
 
         const String defaultText = "Mazda RX-8";

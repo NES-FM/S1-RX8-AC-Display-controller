@@ -18,6 +18,7 @@ class confMenu {
         bool twentyFourHour = true;
         bool displayChanged = false;
         acShow icons;
+        midsectionIcons midIcons;
         String outputText;
     private:
 };

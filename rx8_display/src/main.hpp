@@ -3,6 +3,7 @@
 #include "SPI.h"
 
 #include "logger.h"
+#include "command_parser.h"
 
 #include "buttonPanel.hpp"
 #include "confMenu.hpp"
@@ -12,3 +13,4 @@
 
 void shortButtonAction(btn_enum shortButton);
 void longButtonAction(btn_enum longButton);
+void execute_command(String cmd);

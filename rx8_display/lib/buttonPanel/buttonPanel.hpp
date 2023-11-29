@@ -1,5 +1,6 @@
 #pragma once
 #include <Arduino.h>
+#include <Encoder.h>
 
 #include "logger.h"
 #include "pins.h"
@@ -37,4 +38,7 @@ class buttonPanel {
         bool longPressButtonHeldAfterAction = false;
         const uint8_t buttonDebounce = 50;
         const uint8_t buttonLongShortThresh = 15; //Control the point where shortPushButton becomes longPushButton
+
+        Encoder* fanEncoder;
+        Encoder* tempEncoder;
 };

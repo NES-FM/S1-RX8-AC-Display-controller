@@ -9,10 +9,10 @@ void buttonPanel::init()
     pinMode(matrixRow2, INPUT_PULLUP);
     pinMode(matrixRow3, INPUT_PULLUP);
     pinMode(matrixRow4, INPUT_PULLUP);
-    pinMode(fanInOne, INPUT_PULLUP);
-    pinMode(fanInTwo, INPUT_PULLUP);
-    pinMode(tempInOne, INPUT_PULLUP);
-    pinMode(tempInTwo, INPUT_PULLUP);
+    // pinMode(fanInOne, INPUT_PULLUP);
+    // pinMode(fanInTwo, INPUT_PULLUP);
+    // pinMode(tempInOne, INPUT_PULLUP);
+    // pinMode(tempInTwo, INPUT_PULLUP);
 
     // Control panel LED's
     pinMode(rearDemistLED, OUTPUT);
@@ -21,6 +21,9 @@ void buttonPanel::init()
     pinMode(reCircLED, OUTPUT);
     pinMode(autoLED, OUTPUT);
     pinMode(AirConLED, OUTPUT);
+
+    fanEncoder = new Encoder(fanInOne, fanInTwo);
+    tempEncoder = new Encoder(tempInOne, tempInTwo);
 }
 
 void buttonPanel::tick()
@@ -63,48 +66,52 @@ void buttonPanel::setLeds(acShow leds)
 
 void buttonPanel::checkFanRotation()
 {
-    bool aFanNew = 0;
-    bool bFanNew = 0;
-    aFanNew = (PINC & (1 << PC4));
-    bFanNew = (PINC & (1 << PC1));
+    // bool aFanNew = 0;
+    // bool bFanNew = 0;
+    // aFanNew = (PINC & (1 << PC4));
+    // bFanNew = (PINC & (1 << PC1));
 
-    if (aFanNew != aFanOld || bFanNew != bFanOld)
-    {
-        if ((aFanNew && !aFanOld && !bFanNew && !bFanOld) ||
-            (!aFanNew && aFanOld && bFanNew && bFanOld)) // Right movement
-        {
-            lastTickButtonState.fanRotation = 1;
-        }
-        else if ((aFanNew && aFanOld && !bFanNew && bFanOld) ||
-                 (!aFanNew && !aFanOld && bFanNew && !bFanOld)) // Left movement
-        {
-            lastTickButtonState.fanRotation = -1;
-        }
-    }
-    aFanOld = aFanNew;
-    bFanOld = bFanNew;
+    // if (aFanNew != aFanOld || bFanNew != bFanOld)
+    // {
+    //     if ((aFanNew && !aFanOld && !bFanNew && !bFanOld) ||
+    //         (!aFanNew && aFanOld && bFanNew && bFanOld)) // Right movement
+    //     {
+    //         lastTickButtonState.fanRotation = 1;
+    //     }
+    //     else if ((aFanNew && aFanOld && !bFanNew && bFanOld) ||
+    //              (!aFanNew && !aFanOld && bFanNew && !bFanOld)) // Left movement
+    //     {
+    //         lastTickButtonState.fanRotation = -1;
+    //     }
+    // }
+    // aFanOld = aFanNew;
+    // bFanOld = bFanNew;
+
+    lastTickButtonState.fanRotation = fanEncoder->readAndReset();
 }
 
 void buttonPanel::checkTempRotation()
 {
-    bool aTempNew = 0;
-    bool bTempNew = 0;
-    aTempNew = (PINC & (1 << PC0));
-    bTempNew = (PINC & (1 << PC2));
+    // bool aTempNew = 0;
+    // bool bTempNew = 0;
+    // aTempNew = (PINC & (1 << PC0));
+    // bTempNew = (PINC & (1 << PC2));
 
-    if (aTempNew != aTempOld || bTempNew != bTempOld)
-    {
-        if ((aTempNew && !aTempOld && !bTempNew && !bTempOld) || (!aTempNew && aTempOld && bTempNew && bTempOld)) // Right movement
-        {
-            lastTickButtonState.tempRotation = 1;
-        }
-        else if ((aTempNew && aTempOld && !bTempNew && bTempOld) || (!aTempNew && !aTempOld && bTempNew && !bTempOld)) // Left movement
-        {
-            lastTickButtonState.tempRotation = -1;
-        }
-    }
-    aTempOld = aTempNew;
-    bTempOld = bTempNew;
+    // if (aTempNew != aTempOld || bTempNew != bTempOld)
+    // {
+    //     if ((aTempNew && !aTempOld && !bTempNew && !bTempOld) || (!aTempNew && aTempOld && bTempNew && bTempOld)) // Right movement
+    //     {
+    //         lastTickButtonState.tempRotation = 1;
+    //     }
+    //     else if ((aTempNew && aTempOld && !bTempNew && bTempOld) || (!aTempNew && !aTempOld && bTempNew && !bTempOld)) // Left movement
+    //     {
+    //         lastTickButtonState.tempRotation = -1;
+    //     }
+    // }
+    // aTempOld = aTempNew;
+    // bTempOld = bTempNew;
+
+    lastTickButtonState.tempRotation = tempEncoder->readAndReset();
 }
 
 void buttonPanel::checkPushedButton()

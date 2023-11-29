@@ -8,14 +8,14 @@ void acAmp::init()
 
 void acAmp::tick()
 {
-    // logln("Getting Serial Data");
+    // debugln("Getting Serial Data");
     getSerialData();
     if (messageToProcess)
     {
-        // logln("AC Received!");
+        // debugln("AC Received!");
         if (iconsLeds.ampOn)
         {
-            // logln("ampOn");
+            // debugln("ampOn");
             interpretStatusByte();
             interpretAcState();
             interpretFanSpeed();
@@ -171,7 +171,7 @@ void acAmp::interpretFanSpeed() // Find the current fan speed
     bitWrite(acAmpFanSpeed, 1, bitRead(rxData[2], 5));
     bitWrite(acAmpFanSpeed, 0, bitRead(rxData[2], 4));
 
-    // logln("Fan Speed: %d = %s%s%s", acAmpFanSpeed, bitRead(rxData[2], 6), bitRead(rxData[2], 5), bitRead(rxData[2], 4));
+    // debugln("Fan Speed: %d = %s%s%s", acAmpFanSpeed, bitRead(rxData[2], 6), bitRead(rxData[2], 5), bitRead(rxData[2], 4));
 
     if (acAmpFanSpeed <= 6) // See Wiki
     {
@@ -192,7 +192,7 @@ void acAmp::interpretAcState() // The 3 A/C States
     iconsLeds.stateEco =  !bitRead(rxData[3], 4);
     iconsLeds.stateAc =   !bitRead(rxData[3], 5);
     iconsLeds.stateAuto = !bitRead(rxData[3], 6);
-    logln("AC State: %s%s%s", iconsLeds.stateEco ? "Eco" : "", iconsLeds.stateAc ? "Ac" : "", iconsLeds.stateAuto ? "Auto" : "");
+    debugln("AC State: %s%s%s", iconsLeds.stateEco ? "Eco" : "", iconsLeds.stateAc ? "Ac" : "", iconsLeds.stateAuto ? "Auto" : "");
 }
 
 // Define temperature control mapping
