@@ -84,34 +84,24 @@ void acAmp::shortButtonPress(btn_enum shortButton)
     }
 }
 
-void acAmp::changeRotary(rotationDir fan, rotationDir temp)
+void acAmp::changeRotary(int fan, int temp)
 {
     txData[3] = 0x80;
-    switch (fan)
-    {
-        case right:
-            txData[3] = 0x90;
-            txData[4] = 0xEC;
-            break;
-        case left:
-            txData[3] = 0xF0;
-            txData[4] = 0x8C;
-            break;
-        default:
-            break;
+    if (fan > 0) {
+        txData[3] = 0x90;
+        txData[4] = 0xEC;
     }
-    switch (temp)
-    {
-        case right:
-            txData[3] = 0x81;
-            txData[4] = 0xFB;
-            break;
-        case left:
-            txData[3] = 0x87;
-            txData[4] = 0xF5;
-            break;
-        default:
-            break;
+    else if (fan < 0) {
+        txData[3] = 0xF0;
+        txData[4] = 0x8C;
+    }
+    if (temp > 0) {
+        txData[3] = 0x81;
+        txData[4] = 0xFB;
+    }
+    else if (temp < 0) {
+        txData[3] = 0x87;
+        txData[4] = 0xF5;
     }
 }
 

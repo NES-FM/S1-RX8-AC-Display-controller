@@ -13,7 +13,7 @@ class acAmp {
         void send();
         void setDefault();
         void shortButtonPress(btn_enum shortButton);
-        void changeRotary(rotationDir fan, rotationDir temp);
+        void changeRotary(int fan, int temp);
         void toggleAmbientTemp();
 
         acShow iconsLeds;

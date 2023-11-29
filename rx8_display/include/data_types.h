@@ -11,14 +11,9 @@ enum btn_enum {
     _invalid = 7, // Error if we get here with RX8
     Off = 8 // Off switch
 };
-enum rotationDir {
-    none = 0,
-    left = 1,
-    right = 2
-};
 struct buttonState {
-    rotationDir fanRotation;
-    rotationDir tempRotation;
+    int fanRotation;
+    int tempRotation;
     btn_enum shortPushButton;
     btn_enum longPushButton;
 };

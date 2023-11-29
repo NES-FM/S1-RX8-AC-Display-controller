@@ -1,6 +1,7 @@
 #pragma once
 #include <Arduino.h>
 
+#include "logger.h"
 #include "pins.h"
 #include "data_types.h"
 

@@ -10,21 +10,25 @@ void setup()
 {
     logger_init();
     buttons.init();
+    logln("After b uttons init");
     time.init();
+    logln("After time init");
     ac.init();
+    logln("After ac init");
     disp.init();
+    logln("Endo f setup");
 }
 
 void loop()
 {
     // Get data from AC
-    // logln("Getting AC Data...");
+    logln("Getting AC Data...");
     ac.tick();
 
     // Get State of Center Button Panel
-    // logln("Getting Buttons state...");
+    logln("Getting Buttons state...");
     buttons.tick();
-    // logln("And interpreting it...");
+    logln("And interpreting it...");
     shortButtonAction(buttons.lastTickButtonState.shortPushButton);
     longButtonAction(buttons.lastTickButtonState.longPushButton);
     if (conf.confMode)
@@ -33,21 +37,21 @@ void loop()
         ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
 
     // Get Time
-    // logln("Getting time...");
+    logln("Getting time...");
     time.tick(conf.twentyFourHour, conf.confMode);
 
     // Set LEDs
-    // logln("Setting State LEDs...");
+    logln("Setting State LEDs...");
     buttons.setLeds(ac.iconsLeds);
 
     // Set Display
-    // logln("Setting Display...");
+    logln("Setting Display...");
     if (!conf.confMode)
     {
-        // logln("Not in confMode -> using ac state");
+        logln("Not in confMode -> using ac state");
         if (ac.displayChanged || time.t.minuteChange)
         {
-            // logln("AC Display changed or minuteChange");
+            logln("AC Display changed or minuteChange");
             disp.setAcIcons(ac.iconsLeds);
             disp.setTime(time.t);
 

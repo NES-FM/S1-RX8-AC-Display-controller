@@ -10,7 +10,7 @@ void confMenu::longButtonPress(btn_enum longButton)
 }
 
 //TODO: Implement menu rotary switches
-void confMenu::changeRotary(rotationDir fan, rotationDir temp) {}
+void confMenu::changeRotary(int fan, int temp) {}
 
 //TODO: ConfMenu Activate
 void confMenu::activate() 

@@ -25,8 +25,8 @@ void buttonPanel::init()
 
 void buttonPanel::tick()
 {
-    lastTickButtonState.fanRotation = none;
-    lastTickButtonState.tempRotation = none;
+    lastTickButtonState.fanRotation = 0;
+    lastTickButtonState.tempRotation = 0;
     lastTickButtonState.shortPushButton = no_button;
     lastTickButtonState.longPushButton = no_button;
 
@@ -73,12 +73,12 @@ void buttonPanel::checkFanRotation()
         if ((aFanNew && !aFanOld && !bFanNew && !bFanOld) ||
             (!aFanNew && aFanOld && bFanNew && bFanOld)) // Right movement
         {
-            lastTickButtonState.fanRotation = right;
+            lastTickButtonState.fanRotation = 1;
         }
         else if ((aFanNew && aFanOld && !bFanNew && bFanOld) ||
                  (!aFanNew && !aFanOld && bFanNew && !bFanOld)) // Left movement
         {
-            lastTickButtonState.fanRotation = left;
+            lastTickButtonState.fanRotation = -1;
         }
     }
     aFanOld = aFanNew;
@@ -96,11 +96,11 @@ void buttonPanel::checkTempRotation()
     {
         if ((aTempNew && !aTempOld && !bTempNew && !bTempOld) || (!aTempNew && aTempOld && bTempNew && bTempOld)) // Right movement
         {
-            lastTickButtonState.tempRotation = right;
+            lastTickButtonState.tempRotation = 1;
         }
         else if ((aTempNew && aTempOld && !bTempNew && bTempOld) || (!aTempNew && !aTempOld && bTempNew && !bTempOld)) // Left movement
         {
-            lastTickButtonState.tempRotation = left;
+            lastTickButtonState.tempRotation = -1;
         }
     }
     aTempOld = aTempNew;

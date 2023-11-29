@@ -13,11 +13,6 @@
 #define reCircLED 28
 #define matrixColB 29
 
-// PORTB
-#define DATAOUT 51  // MOSI
-#define SPICLOCK 52 // sck
-#define ssPin 53    // PB0
-
 // PORTC Outputs
 #define freshAirLED 30
 #define matrixColA 31
@@ -29,5 +24,10 @@
 #define tempInOne 37
 
 // PORT L
-#define mode0 49
 #define mode1 48
+#define mode0 49
+
+// PORTB
+#define DATAOUT 51  // MOSI
+#define SPICLOCK 52 // sck
+#define ssPin 53    // PB0
