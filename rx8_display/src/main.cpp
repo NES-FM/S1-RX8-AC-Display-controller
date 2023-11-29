@@ -1,12 +1,5 @@
 #include "main.hpp"
 
-
-/*******************
- * TODO list:
- * - conf menu
-*/
-
-
 buttonPanel buttons;
 confMenu conf;
 acAmp ac;
@@ -15,6 +8,7 @@ clock time;
 
 void setup()
 {
+    logger_init();
     buttons.init();
     time.init();
     ac.init();
@@ -24,10 +18,13 @@ void setup()
 void loop()
 {
     // Get data from AC
+    // logln("Getting AC Data...");
     ac.tick();
 
     // Get State of Center Button Panel
+    // logln("Getting Buttons state...");
     buttons.tick();
+    // logln("And interpreting it...");
     shortButtonAction(buttons.lastTickButtonState.shortPushButton);
     longButtonAction(buttons.lastTickButtonState.longPushButton);
     if (conf.confMode)
@@ -36,16 +33,21 @@ void loop()
         ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
 
     // Get Time
+    // logln("Getting time...");
     time.tick(conf.twentyFourHour, conf.confMode);
 
     // Set LEDs
+    // logln("Setting State LEDs...");
     buttons.setLeds(ac.iconsLeds);
 
     // Set Display
+    // logln("Setting Display...");
     if (!conf.confMode)
     {
+        // logln("Not in confMode -> using ac state");
         if (ac.displayChanged || time.t.minuteChange)
         {
+            // logln("AC Display changed or minuteChange");
             disp.setAcIcons(ac.iconsLeds);
             disp.setTime(time.t);
 
@@ -58,9 +60,11 @@ void loop()
     }
     else
     {
+        // logln("ConfMode -> using conf state");
         conf.menuTick();
         if (conf.displayChanged || time.t.minuteChange)
         {
+            // logln("Conf Display changed or minuteChange");
             disp.setAcIcons(conf.icons);
             disp.setTime(time.t);
             disp.writeToCharDisp(conf.outputText);
@@ -70,8 +74,14 @@ void loop()
     }
 
     // Send Button data to AC
+    // logln("Sending to AC...");
     if (!conf.confMode)
         ac.send();
+
+    #ifdef debug
+    // logln("End of loop...");
+    // delay(100);
+    #endif
 }
 
 void shortButtonAction(btn_enum shortButton) {

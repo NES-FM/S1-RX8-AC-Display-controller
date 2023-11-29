@@ -8,11 +8,14 @@ void acAmp::init()
 
 void acAmp::tick()
 {
+    // logln("Getting Serial Data");
     getSerialData();
     if (messageToProcess)
     {
+        // logln("AC Received!");
         if (iconsLeds.ampOn)
         {
+            // logln("ampOn");
             interpretStatusByte();
             interpretAcState();
             interpretFanSpeed();
@@ -178,6 +181,8 @@ void acAmp::interpretFanSpeed() // Find the current fan speed
     bitWrite(acAmpFanSpeed, 1, bitRead(rxData[2], 5));
     bitWrite(acAmpFanSpeed, 0, bitRead(rxData[2], 4));
 
+    // logln("Fan Speed: %d = %s%s%s", acAmpFanSpeed, bitRead(rxData[2], 6), bitRead(rxData[2], 5), bitRead(rxData[2], 4));
+
     if (acAmpFanSpeed <= 6) // See Wiki
     {
         acAmpFanSpeed++;
@@ -197,6 +202,7 @@ void acAmp::interpretAcState() // The 3 A/C States
     iconsLeds.stateEco =  !bitRead(rxData[3], 4);
     iconsLeds.stateAc =   !bitRead(rxData[3], 5);
     iconsLeds.stateAuto = !bitRead(rxData[3], 6);
+    logln("AC State: %s%s%s", iconsLeds.stateEco ? "Eco" : "", iconsLeds.stateAc ? "Ac" : "", iconsLeds.stateAuto ? "Auto" : "");
 }
 
 // Define temperature control mapping
@@ -217,8 +223,10 @@ void acAmp::interpretTemp()
 // Get data from the acAmplifier. Note we don't sit and wait around for a full payload.
 void acAmp::getSerialData()
 {
+    // log_inline_begin(); log_inline("AC received byte ");
     if (Serial2.available() > 0)
-    { // iconsLeds.ampOn = true;
+    { 
+        iconsLeds.ampOn = true;
         lastRx = millis();
         receivedByte = Serial2.read();
         if (receivedByte == 0x0F || receivedByte == 0x0D || receivedByte == 0x0E) // We don't know the last byte but we know the first byte will be one of these
@@ -229,33 +237,39 @@ void acAmp::getSerialData()
                 rxData[curRxByte] = receivedByte;
                 rxChanged = true;
             }
+            // log_inline(" %d:%0x", curRxByte, receivedByte);
         }
         else
         {
             curRxByte++;
+            // log_inline("as byte %d ", curRxByte);
             if (receivedByte != rxData[curRxByte])
             {
                 rxData[curRxByte] = receivedByte;
                 rxChanged = true;
-
-                if (curRxByte == 5) // we know the length of the data transfer. If we knew how to calculate the checksum we could validate received data but for now we assume it's correct.
-                {
-                    iconsLeds.ampOn = rxData[4] != 0xFF; // Stops icon flicker at startup by pretending the ac is off until everything is settled
-                    messageToProcess = true;
-                    curRxByte = 0;
-                }
+                // log_inline("marked as changed ");
+            }
+            // log_inline(" %d:%0x", curRxByte, receivedByte);
+            if (curRxByte == 5) // we know the length of the data transfer. If we knew how to calculate the checksum we could validate received data but for now we assume it's correct.
+            {
+                // log_inline("and last byte ");
+                // iconsLeds.ampOn = rxData[4] != 0xFF; // Stops icon flicker at startup by pretending the ac is off until everything is settled
+                messageToProcess = true;
+                curRxByte = 0;
+                // log_inline("!");
+                // log_inline_end();
+                // TODO: Need to clear the input buffer, if arduino starts lagging behind
             }
         }
     }
-    else
+    else if (millis() - lastRx > 30) // If there is no data we assume the A\C amplifier is off and we run 1 cycle to clear the display. This is easier than having to monitor assorted vehicle power states.
     {
-        if (millis() - lastRx > 30) // If there is no data we assume the A\C amplifier is off and we run 1 cycle to clear the display. This is easier than having to monitor assorted vehicle power states.
-        {
-            iconsLeds.ampOn = false;
-            messageToProcess = true;
-            rxChanged = true;
-        }
+        // log_inline("  --  Would have set amp as off because of too long interval --  ");
+        // iconsLeds.ampOn = false;
+        // messageToProcess = true;
+        // rxChanged = true;
     }
+    // log_inline_end();
 }
 
 void acAmp::acAmpSend() // Send hardware changes to the AC Amplifier

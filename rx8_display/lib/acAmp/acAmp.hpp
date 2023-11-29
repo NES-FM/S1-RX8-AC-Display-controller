@@ -3,6 +3,7 @@
 
 #include "pins.h"
 #include "data_types.h"
+#include "logger.h"
 
 class acAmp {
     public:

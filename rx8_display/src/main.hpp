@@ -2,6 +2,8 @@
 #include "Wire.h"
 #include "SPI.h"
 
+#include "logger.h"
+
 #include "buttonPanel.hpp"
 #include "confMenu.hpp"
 #include "acAmp.hpp"

@@ -67,12 +67,22 @@ void display::calculateIcons()
 
     if (acIcons.ampOn)
     {
-        iconArray[12] += 0x01; // The seated man
+        // The seated man
+        iconArray[12] += 0x01;
+        if (acIcons.modeFrontDemist)
+            iconArray[12] += 0x02;
+        if (acIcons.modeFeet)
+            iconArray[12] += 0x04;
+        if (acIcons.modeFace)
+            iconArray[13] += 0x04;
+
+        // Car Icon
         if (acIcons.modeRecirculate)
             iconArray[7] += 0x09; // Fresh air arrow + Car logo
         else
             iconArray[7] += 0x05; // Recirc arrow + Car logo
 
+        // Ambient / Set Temperature show
         if (acIcons.displayAmbient)
         {
             iconArray[6] += 0x02; // AMB
@@ -86,6 +96,14 @@ void display::calculateIcons()
             iconArray[13] += 0x02; // decimal place in TMP
             iconArray[6] += 0x04;  // Thermo symbol
         }
+
+        // AC States
+        if (acIcons.stateAuto)
+            iconArray[7] += 0x10;
+        if (acIcons.stateAc)
+            iconArray[8] += 0x08;
+        if (acIcons.stateEco)
+            iconArray[8] += 0x10;
     }
 }
 
