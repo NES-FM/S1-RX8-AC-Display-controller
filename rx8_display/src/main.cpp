@@ -17,25 +17,25 @@ void setup()
 {
     logger_init();
     buttons.init();
-    debugln("After buttons init");
+    // debugln("After buttons init");
     time.init();
-    debugln("After time init");
+    // debugln("After time init");
     ac.init();
-    debugln("After ac init");
+    // debugln("After ac init");
     disp.init();
-    debugln("Endof setup");
+    // debugln("Endof setup");
 }
 
 void loop()
 {
     // Get data from AC
-    debugln("Getting AC Data...");
+    // debugln("Getting AC Data...");
     ac.tick();
 
     // Get State of Center Button Panel
-    debugln("Getting Buttons state...");
+    // debugln("Getting Buttons state...");
     buttons.tick();
-    debugln("And interpreting it...");
+    // debugln("And interpreting it...");
     shortButtonAction(buttons.lastTickButtonState.shortPushButton);
     longButtonAction(buttons.lastTickButtonState.longPushButton);
     if (conf.confMode)
@@ -44,24 +44,24 @@ void loop()
         ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
 
     // Get Time
-    debugln("Getting time...");
+    // debugln("Getting time...");
     time.tick(conf.twentyFourHour, conf.confMode);
 
     // Serial Data
-    execute_command(logger_tick());
+    // execute_command(logger_tick());
 
     // Set LEDs
-    debugln("Setting State LEDs...");
+    // debugln("Setting State LEDs...");
     buttons.setLeds(ac.iconsLeds);
 
     // Set Display
-    debugln("Setting Display...");
+    // debugln("Setting Display...");
     if (!conf.confMode)
     {
-        debugln("Not in confMode -> using ac state");
+        // debugln("Not in confMode -> using ac state");
         if (ac.displayChanged || time.t.minuteChange)
         {
-            debugln("AC Display changed or minuteChange");
+            // debugln("AC Display changed or minuteChange");
             disp.setAcIcons(ac.iconsLeds);
             disp.setTime(time.t);
 
@@ -75,11 +75,11 @@ void loop()
     }
     else
     {
-        debugln("ConfMode -> using conf state");
+        // debugln("ConfMode -> using conf state");
         conf.menuTick();
         if (conf.displayChanged || time.t.minuteChange)
         {
-            debugln("Conf Display changed or minuteChange");
+            // debugln("Conf Display changed or minuteChange");
             disp.setAcIcons(conf.icons);
             disp.setMidIcons(conf.midIcons);
             disp.setTime(time.t);
@@ -90,11 +90,11 @@ void loop()
     }
 
     // Send Button data to AC
-    debugln("Sending to AC...");
+    // debugln("Sending to AC...");
     if (!conf.confMode)
         ac.send();
 
-    debugln("End of loop...");
+    // debugln("End of loop...");
 }
 
 void shortButtonAction(btn_enum shortButton) {

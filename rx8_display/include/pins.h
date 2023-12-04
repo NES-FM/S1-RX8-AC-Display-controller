@@ -1,7 +1,12 @@
 #pragma once
+#define fanInTwo 2
+#define tempInOne 3
 
 #define acAmpTX 8
 #define acAmpRX 12
+
+#define fanInOne 18
+#define tempInTwo 19
 
 // PORTA Inputs
 #define matrixRow2 22
@@ -17,11 +22,7 @@
 #define freshAirLED 30
 #define matrixColA 31
 #define frontDemistLED 32
-#define fanInOne 33
 #define autoLED 34
-#define tempInTwo 35
-#define fanInTwo 36
-#define tempInOne 37
 
 // PORT L
 #define mode1 48
