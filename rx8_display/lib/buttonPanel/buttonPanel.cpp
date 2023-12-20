@@ -35,14 +35,14 @@ void buttonPanel::tick()
 
     if (millis() - last_get_buttons >= BUTTON_PANEL_BUTTONS_INTERVAL)
     {
-        log_inline_begin();
+        // log_inline_begin();
 
         checkFanRotation();
         checkTempRotation();
         checkPushedButton();
         last_get_buttons = millis();
 
-        log_inline_end();
+        // log_inline_end();
     }
 }
 
@@ -92,7 +92,7 @@ void buttonPanel::checkFanRotation()
     // bFanOld = bFanNew;
 
     lastTickButtonState.fanRotation = fanEncoder->readAndReset();
-    log_inline(" FanRotation:%d", lastTickButtonState.fanRotation);
+    // log_inline(" FanRotation:%d", lastTickButtonState.fanRotation);
 }
 
 void buttonPanel::checkTempRotation()
@@ -117,7 +117,7 @@ void buttonPanel::checkTempRotation()
     // bTempOld = bTempNew;
 
     lastTickButtonState.tempRotation = tempEncoder->readAndReset();
-    log_inline(" TempRotation:%d", lastTickButtonState.tempRotation);
+    // log_inline(" TempRotation:%d", lastTickButtonState.tempRotation);
 }
 
 void buttonPanel::checkPushedButton()
@@ -227,5 +227,5 @@ void buttonPanel::checkMatrixCycle() // we poll the pin matrix this takes 2 cycl
         }
     }
 
-    log_inline(" PushedButtonCurrent: %d", (int)pushedButtonCurrent);
+    // log_inline(" PushedButtonCurrent: %d", (int)pushedButtonCurrent);
 }

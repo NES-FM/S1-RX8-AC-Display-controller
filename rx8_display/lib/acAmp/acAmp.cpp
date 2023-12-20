@@ -192,7 +192,7 @@ void acAmp::interpretAcState() // The 3 A/C States
     iconsLeds.stateEco =  !bitRead(rxData[3], 4);
     iconsLeds.stateAc =   !bitRead(rxData[3], 5);
     iconsLeds.stateAuto = !bitRead(rxData[3], 6);
-    debugln("AC State: %s%s%s", iconsLeds.stateEco ? "Eco" : "", iconsLeds.stateAc ? "Ac" : "", iconsLeds.stateAuto ? "Auto" : "");
+    // debugln("AC State: %s%s%s", iconsLeds.stateEco ? "Eco" : "", iconsLeds.stateAc ? "Ac" : "", iconsLeds.stateAuto ? "Auto" : "");
 }
 
 // Define temperature control mapping

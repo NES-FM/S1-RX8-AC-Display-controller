@@ -2,8 +2,12 @@
 #define fanInTwo 2
 #define tempInOne 3
 
-#define acAmpTX 8
-#define acAmpRX 12
+#define hazardBacklight 9
+
+#define footBacklight 12
+
+#define acAmpTX 16
+#define acAmpRX 17
 
 #define fanInOne 18
 #define tempInTwo 19
@@ -32,3 +36,7 @@
 #define DATAOUT 51  // MOSI
 #define SPICLOCK 52 // sck
 #define ssPin 53    // PB0
+
+#define ignitionVoltage A4
+#define backlightPositive A8
+#define backlightNegative A11

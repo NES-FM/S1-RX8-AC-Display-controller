@@ -15,10 +15,12 @@ void clock::init()
 
     if (enabled) {
         //rtc.adjust(DateTime(2014, 1, 21, 4, 33, 0)); //a fixed time
-        // rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); // your PC's time. ***** You may need to comment out after 1 upload to set the time - see wiki*******
+        // rtc->adjust(DateTime(F(__DATE__), F(__TIME__))); // your PC's time. ***** You may need to comment out after 1 upload to set the time - see wiki*******
         DateTime now = rtc->now();
         nowHour = now.hour();
         nowMinute = now.minute();
+        nowSecond = now.second();
+        logln("Clock Initialized and adjusted to: %d:%d:%d. Clock %s", (int)nowHour, (int)nowMinute, (int)nowSecond, rtc->isrunning() ? "is running." : "is NOT running.");
     }
 }
 
@@ -31,17 +33,20 @@ void clock::tick(bool twentyfourhour, bool force)
             nowTimeCycle = millis();
             nowHour = now.hour();
             nowMinute = now.minute();
+            nowSecond = now.second();
+            logln("Checking for time: %d:%d:%d. Clock %s", (int)nowHour, (int)nowMinute, (int)nowSecond, rtc->isrunning() ? "is running." : "is NOT running.");
 
             if (!twentyfourhour && nowHour > 12) // 12 or 24 hour
                 t.curHour = nowHour - 12;
             else
                 t.curHour = nowHour;
 
-            t.curMinute = nowMinute;
-
             //If the hour or minute are continually updating the other icons flicker\vanish as they are not set constantly, so we flag a minute change to manage display updates.
-            t.minuteChange = t.prevMinute != t.curMinute;
-            t.prevMinute = t.curMinute;
+            if (prevMinute != nowMinute) {
+                prevMinute = nowMinute;
+                t.minuteChange = true;
+                t.curMinute = nowMinute;
+            }
         }
     }
 }

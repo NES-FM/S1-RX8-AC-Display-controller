@@ -12,6 +12,7 @@ confMenu conf;
 acAmp ac;
 display disp;
 clock time;
+backlightLedManager backlight;
 
 void setup()
 {
@@ -24,6 +25,10 @@ void setup()
     // debugln("After ac init");
     disp.init();
     // debugln("Endof setup");
+
+    backlight.registerBackgroundLed(new digitalBacklightLed(footBacklight));
+    backlight.registerBackgroundLed(new digitalBacklightLed(hazardBacklight));
+    backlight.init();
 }
 
 void loop()
@@ -61,6 +66,9 @@ void loop()
         // debugln("Not in confMode -> using ac state");
         if (ac.displayChanged || time.t.minuteChange)
         {
+            // if (time.t.minuteChange) {
+            //     logln("Minute change: %d", (int)time.t.curMinute);
+            // }
             // debugln("AC Display changed or minuteChange");
             disp.setAcIcons(ac.iconsLeds);
             disp.setTime(time.t);
@@ -93,6 +101,9 @@ void loop()
     // debugln("Sending to AC...");
     if (!conf.confMode)
         ac.send();
+
+    // Setting backlight
+    backlight.tick();
 
     // debugln("End of loop...");
 }
