@@ -23,7 +23,7 @@ void backlightLedManager::tick()
     if (millis() - lastBacklightMillis > 100) {
         lastBacklightMillis = millis();
         bool on = analogRead(backlightPositive) > 512;
-        uint16_t brightness = constrain(map(analogRead(backlightNegative), 1024, 0, 0, UINT16_MAX), 0, UINT16_MAX);
+        uint16_t brightness = constrain(map(analogRead(backlightNegative), 1024, 0, 0, UINT16_MAX), 0, UINT16_MAX); // TODO Brightness reading 0 or 800, no values inbetween
         for (int i = 0; i < num_el_in_bg_vector; i++) {
             bg_vector[i]->setValue(on, brightness);
         }

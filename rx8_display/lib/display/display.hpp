@@ -14,7 +14,12 @@ class display {
         inline void setTime(timeObj t) { time = t; }
         void sendIcons();
         void sendSevenSeg();
-        void writeToCharDisp(String _lcdInput);
+
+        /*********** 
+         * AAA:AAAAAAA.'A."A
+         * colon, fullstop 1, prime_marks, fullstop_2
+        */
+        void writeToCharDisp(String _lcdInput, bool colon = false, bool fullstop_1 = false, bool fullstop_2 = false, bool prime_marks = false);
 
     private:
         // iconArray for display icons 90-9D, first 5 LSB, calculated via addition

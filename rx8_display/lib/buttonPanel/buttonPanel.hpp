@@ -11,6 +11,7 @@ class buttonPanel {
         buttonPanel() {};
         void init();
         void tick();
+        void allow() { _allow = true; }
         void setLeds(acShow leds);
 
         buttonState lastTickButtonState;
@@ -24,6 +25,8 @@ class buttonPanel {
         void checkPushedButton();
         void checkMatrixCycle();
 
+        bool _allow = true;
+
         // Rotary switches
         bool aFanOld = 0;
         bool bFanOld = 0;
@@ -31,13 +34,10 @@ class buttonPanel {
         bool bTempOld = 0;
 
         // Push button matrix stuff
-        uint8_t buttonCount = 0;
         btn_enum pushedButtonOld = no_button;
         btn_enum pushedButtonCurrent = no_button;
         unsigned long buttonPushedMillis = 0;
-        bool longPressButtonHeldAfterAction = false;
-        const uint8_t buttonDebounce = 50;
-        const uint8_t buttonLongShortThresh = 15; //Control the point where shortPushButton becomes longPushButton
+        bool longPressRegistered = false;
 
         Encoder* fanEncoder;
         Encoder* tempEncoder;

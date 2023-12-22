@@ -380,8 +380,13 @@ void display::sevenSegmentCalculate(byte _column, byte _value)
 }
 
 // _lcdInput is string that will be a fixed size of 12 characters
-void display::writeToCharDisp(String _lcdInput)
+void display::writeToCharDisp(String _lcdInput, bool colon = false, bool fullstop_1 = false, bool fullstop_2 = false, bool prime_marks = false)
 {
+    midIcons.mid_section_colon = colon;
+    midIcons.fullstop_char_10_11 = fullstop_1;
+    midIcons.fullstop_char_11_12 = fullstop_2;
+    midIcons.min_sec_prime_marks = prime_marks;
+
     _lcdInput = _lcdInput.substring(0, 12);
 
     if (_lcdInput.length() < 12)

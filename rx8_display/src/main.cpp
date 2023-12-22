@@ -18,13 +18,9 @@ void setup()
 {
     logger_init();
     buttons.init();
-    // debugln("After buttons init");
     time.init();
-    // debugln("After time init");
     ac.init();
-    // debugln("After ac init");
     disp.init();
-    // debugln("Endof setup");
 
     backlight.registerBackgroundLed(new digitalBacklightLed(footBacklight));
     backlight.registerBackgroundLed(new digitalBacklightLed(hazardBacklight));
@@ -34,44 +30,52 @@ void setup()
 void loop()
 {
     // Get data from AC
-    // debugln("Getting AC Data...");
     ac.tick();
 
     // Get State of Center Button Panel
-    // debugln("Getting Buttons state...");
     buttons.tick();
-    // debugln("And interpreting it...");
-    shortButtonAction(buttons.lastTickButtonState.shortPushButton);
-    longButtonAction(buttons.lastTickButtonState.longPushButton);
     if (conf.confMode)
+    {
+        conf.shortButtonPress(buttons.lastTickButtonState.shortPushButton);
+        conf.longButtonPress(buttons.lastTickButtonState.longPushButton);
         conf.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
+        buttons.allow();
+    } 
     else
+    {
+        ac.shortButtonPress(buttons.lastTickButtonState.shortPushButton);
+        longButtonAction(buttons.lastTickButtonState.longPushButton);
         ac.changeRotary(buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation);
 
+        // Send Button data to AC
+        if (ac.send()) // If sent and not in interval
+            buttons.allow();
+    }
+
     // Get Time
-    // debugln("Getting time...");
     time.tick(conf.twentyFourHour, conf.confMode);
 
     // Serial Data
     // execute_command(logger_tick());
 
     // Set LEDs
-    // debugln("Setting State LEDs...");
     buttons.setLeds(ac.iconsLeds);
 
     // Set Display
-    // debugln("Setting Display...");
     if (!conf.confMode)
     {
-        // debugln("Not in confMode -> using ac state");
         if (ac.displayChanged || time.t.minuteChange)
         {
-            // if (time.t.minuteChange) {
-            //     logln("Minute change: %d", (int)time.t.curMinute);
-            // }
-            // debugln("AC Display changed or minuteChange");
             disp.setAcIcons(ac.iconsLeds);
             disp.setTime(time.t);
+
+            // Midsection:
+            double voltage = (double)analogRead(ignitionVoltage) * 0.0146484375; // Map from 0-1024 to 0-15
+            logln("Battery: %d -> %.1f", analogRead(ignitionVoltage), voltage);
+            char out[16];
+            sprintf(out, "BAT %.1fV", voltage);
+            disp.writeToCharDisp(out, true);
+
 
             disp.sendIcons();
             disp.sendSevenSeg();
@@ -79,15 +83,12 @@ void loop()
             ac.displayChanged = false;
             time.t.minuteChange = false;
         }
-        // TODO: Provider for midsection
     }
     else
     {
-        // debugln("ConfMode -> using conf state");
         conf.menuTick();
         if (conf.displayChanged || time.t.minuteChange)
         {
-            // debugln("Conf Display changed or minuteChange");
             disp.setAcIcons(conf.icons);
             disp.setMidIcons(conf.midIcons);
             disp.setTime(time.t);
@@ -97,50 +98,31 @@ void loop()
         }
     }
 
-    // Send Button data to AC
-    // debugln("Sending to AC...");
-    if (!conf.confMode)
-        ac.send();
-
     // Setting backlight
     backlight.tick();
-
-    // debugln("End of loop...");
-}
-
-void shortButtonAction(btn_enum shortButton) {
-    if (conf.confMode)
-        conf.shortButtonPress(shortButton);
-    else
-        ac.shortButtonPress(shortButton);
 }
 
 void longButtonAction(btn_enum longButton) {
-    if (conf.confMode)
-        conf.longButtonPress(longButton);
-    else
+    switch (longButton)
     {
-        switch (longButton)
-        {
-            case Auto:
-                ac.toggleAmbientTemp();
-                break;
-            case Mode:
-                conf.activate();
-                break;
-            case AC:
-                break;
-            case frontDemist:
-                break;
-            case rearDemist:
-                break;
-            case AirSource:
-                break;
-            case Off:
-                break;
-            default:
-                break;
-        }
+        case Auto:
+            ac.toggleAmbientTemp();
+            break;
+        case Mode:
+            conf.activate();
+            break;
+        case AC:
+            break;
+        case frontDemist:
+            break;
+        case rearDemist:
+            break;
+        case AirSource:
+            break;
+        case Off:
+            break;
+        default:
+            break;
     }
 }
 

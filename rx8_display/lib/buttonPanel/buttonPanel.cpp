@@ -28,21 +28,24 @@ void buttonPanel::init()
 
 void buttonPanel::tick()
 {
-    lastTickButtonState.fanRotation = 0;
-    lastTickButtonState.tempRotation = 0;
-    lastTickButtonState.shortPushButton = no_button;
-    lastTickButtonState.longPushButton = no_button;
-
-    if (millis() - last_get_buttons >= BUTTON_PANEL_BUTTONS_INTERVAL)
+    if (_allow)
     {
-        // log_inline_begin();
+        lastTickButtonState.fanRotation = 0;
+        lastTickButtonState.tempRotation = 0;
+        lastTickButtonState.shortPushButton = no_button;
+        lastTickButtonState.longPushButton = no_button;
+        if (millis() - last_get_buttons >= BUTTON_PANEL_BUTTONS_INTERVAL)
+        {
+            // log_inline_begin();
 
-        checkFanRotation();
-        checkTempRotation();
-        checkPushedButton();
-        last_get_buttons = millis();
+            checkFanRotation();
+            checkTempRotation();
+            checkPushedButton();
+            last_get_buttons = millis();
 
-        // log_inline_end();
+            // log_inline_end();
+            _allow = false;
+        }
     }
 }
 
@@ -124,35 +127,32 @@ void buttonPanel::checkPushedButton()
 {
     checkMatrixCycle(); // Buttons have a matrix switch arrangement.
 
-    if (pushedButtonCurrent == no_button && longPressButtonHeldAfterAction) // Long button press is single shot, so must be reset by removing finger.
-    {
-        longPressButtonHeldAfterAction = false;
-    }
-
-    // if (any button pressed) && (only in some interval) && (if its the same as last time, only if not already long press)
-    if (pushedButtonCurrent != no_button && (millis() - buttonPushedMillis >= buttonDebounce) && (!longPressButtonHeldAfterAction && pushedButtonCurrent == pushedButtonOld)) // index the button count
-    {
-        buttonCount++;
-        buttonPushedMillis = millis();
-    }
-
-    // If button released
-    if (pushedButtonCurrent != pushedButtonOld && pushedButtonCurrent == 0)
-    {
-        if (buttonCount < buttonLongShortThresh)
-        {
-            lastTickButtonState.shortPushButton = pushedButtonOld;
+    if (pushedButtonCurrent != pushedButtonOld) {
+        // If button released
+        if (pushedButtonCurrent == no_button) {
+            // If it was long press
+            if (longPressRegistered) {
+                longPressRegistered = false;
+            } else {
+                // Else it was short press
+                unsigned long timedelta = millis() - buttonPushedMillis;
+                // Debounce minimum time
+                if (timedelta >= 50) {
+                    lastTickButtonState.shortPushButton = pushedButtonOld;
+                }
+            }
+        } else {
+            // Button Pushed
             buttonPushedMillis = millis();
-            pushedButtonOld = pushedButtonCurrent;
-            buttonCount = 0;
         }
-    }
-
-    // Button Held for long enough
-    if (!longPressButtonHeldAfterAction && pushedButtonCurrent && buttonCount > buttonLongShortThresh) // Do something with a long button press
-    {
-        lastTickButtonState.longPushButton = pushedButtonOld;
-        longPressButtonHeldAfterAction = true;
+        pushedButtonOld = pushedButtonCurrent;
+    } else {
+        // Check if button held for long enough
+        unsigned long timedelta = millis() - buttonPushedMillis;
+        if (timedelta >= 2500) {
+            lastTickButtonState.longPushButton = pushedButtonCurrent;
+            longPressRegistered = true;
+        }
     }
 }
 

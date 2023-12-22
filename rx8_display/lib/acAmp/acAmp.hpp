@@ -10,7 +10,7 @@ class acAmp {
         acAmp() {}
         void init();
         void tick();
-        void send();
+        bool send();
         void setDefault();
         void shortButtonPress(btn_enum shortButton);
         void changeRotary(int fan, int temp);

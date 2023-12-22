@@ -29,12 +29,14 @@ void acAmp::tick()
     }
 }
 
-void acAmp::send()
+bool acAmp::send()
 {
     if ((millis() - lastTx >= txInterval))
     {
         acAmpSend();
+        return true;
     }
+    return false;
 }
 
 void acAmp::setDefault()
