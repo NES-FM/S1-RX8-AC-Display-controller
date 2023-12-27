@@ -4,8 +4,13 @@ backlightLedManager::backlightLedManager() {}
 
 void backlightLedManager::registerBackgroundLed(backlightLedBase *item)
 {
-    bg_vector[num_el_in_bg_vector] = item;
-    num_el_in_bg_vector++;
+    if (num_el_in_bg_vector < bg_vector_size) {
+        bg_vector[num_el_in_bg_vector] = item;
+        num_el_in_bg_vector++;
+    } else {
+        logln("ERROR!!! BG_VECTOR IS NOT BIG ENOUGH");
+        delay(5000);
+    }
 }
 
 void backlightLedManager::init()

@@ -14,6 +14,8 @@ display disp;
 clock time;
 backlightLedManager backlight;
 
+midsectionIcons emptyMidIcons;
+
 void setup()
 {
     logger_init();
@@ -67,15 +69,10 @@ void loop()
         if (ac.displayChanged || time.t.minuteChange)
         {
             disp.setAcIcons(ac.iconsLeds);
+            disp.setMidIcons(emptyMidIcons);
             disp.setTime(time.t);
 
-            // Midsection:
-            double voltage = (double)analogRead(ignitionVoltage) * 0.0146484375; // Map from 0-1024 to 0-15
-            logln("Battery: %d -> %.1f", analogRead(ignitionVoltage), voltage);
-            char out[16];
-            sprintf(out, "BAT %.1fV", voltage);
-            disp.writeToCharDisp(out, true);
-
+            midsectionHandler();
 
             disp.sendIcons();
             disp.sendSevenSeg();
@@ -92,9 +89,14 @@ void loop()
             disp.setAcIcons(conf.icons);
             disp.setMidIcons(conf.midIcons);
             disp.setTime(time.t);
+
             disp.writeToCharDisp(conf.outputText);
+
             disp.sendIcons();
             disp.sendSevenSeg();
+
+            conf.displayChanged = false;
+            time.t.minuteChange = false;
         }
     }
 
@@ -124,6 +126,26 @@ void longButtonAction(btn_enum longButton) {
         default:
             break;
     }
+}
+
+void midsectionHandler() {
+    double voltage = (double)analogRead(ignitionVoltage) * 0.0146484375; // Map from 0-1024 to 0-15
+
+    // if (voltage > 12.5) { // Motor Running
+    //     double motorTemp = 0; // TODO: Get motor temperature via canbus
+
+    //     if (motorTemp <= 90) { // Motor Cold
+    //         char tempStr[6];
+    //         dtostrf(motorTemp, 4, 1, tempStr);
+    //         disp.writeToCharDisp("TMP " + String(tempStr) + "°C", true);
+    //     } else { // Motor Hot
+    //         disp.writeToCharDisp("MAZDA RX-8"); // TODO: Calculate fuel consumption by getting values via canbus
+    //     }
+    // } else { // Motor Off
+        char voltageStr[6];
+        dtostrf(voltage, 4, 1, voltageStr);
+        disp.writeToCharDisp("BAT " + String(voltageStr) + "V", true);
+    // }
 }
 
 void execute_command(String cmd) {

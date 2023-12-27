@@ -95,7 +95,8 @@ void buttonPanel::checkFanRotation()
     // bFanOld = bFanNew;
 
     lastTickButtonState.fanRotation = fanEncoder->readAndReset();
-    // log_inline(" FanRotation:%d", lastTickButtonState.fanRotation);
+    if (lastTickButtonState.fanRotation != 0)
+        log_inline(" FanRotation:%d", lastTickButtonState.fanRotation);
 }
 
 void buttonPanel::checkTempRotation()
@@ -120,38 +121,45 @@ void buttonPanel::checkTempRotation()
     // bTempOld = bTempNew;
 
     lastTickButtonState.tempRotation = tempEncoder->readAndReset();
-    // log_inline(" TempRotation:%d", lastTickButtonState.tempRotation);
+    if (lastTickButtonState.tempRotation != 0)
+        log_inline(" TempRotation:%d", lastTickButtonState.tempRotation);
 }
 
 void buttonPanel::checkPushedButton()
 {
+    log_inline("\t|\t");
     checkMatrixCycle(); // Buttons have a matrix switch arrangement.
 
     if (pushedButtonCurrent != pushedButtonOld) {
         // If button released
         if (pushedButtonCurrent == no_button) {
+            log_inline(" Released");
             // If it was long press
             if (longPressRegistered) {
                 longPressRegistered = false;
             } else {
                 // Else it was short press
                 unsigned long timedelta = millis() - buttonPushedMillis;
+                log_inline(" Short-");
                 // Debounce minimum time
                 if (timedelta >= 50) {
                     lastTickButtonState.shortPushButton = pushedButtonOld;
+                    log_inline("Press");
                 }
             }
         } else {
             // Button Pushed
             buttonPushedMillis = millis();
+            log_inline(" %d Pushed at %lu", pushedButtonCurrent, buttonPushedMillis);
         }
         pushedButtonOld = pushedButtonCurrent;
-    } else {
+    } else if (!longPressRegistered) {
         // Check if button held for long enough
         unsigned long timedelta = millis() - buttonPushedMillis;
-        if (timedelta >= 2500) {
+        if (timedelta >= 1000) {
             lastTickButtonState.longPushButton = pushedButtonCurrent;
             longPressRegistered = true;
+            log_inline(" LongPress");
         }
     }
 }
@@ -227,5 +235,6 @@ void buttonPanel::checkMatrixCycle() // we poll the pin matrix this takes 2 cycl
         }
     }
 
-    // log_inline(" PushedButtonCurrent: %d", (int)pushedButtonCurrent);
+    if (pushedButtonCurrent != no_button)
+        log_inline(" PushedButtonCurrent: %d", (int)pushedButtonCurrent);
 }

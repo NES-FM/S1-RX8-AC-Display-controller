@@ -14,4 +14,5 @@
 
 void shortButtonAction(btn_enum shortButton);
 void longButtonAction(btn_enum longButton);
+void midsectionHandler();
 void execute_command(String cmd);

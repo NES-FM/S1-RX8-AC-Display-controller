@@ -35,7 +35,8 @@ class backlightLedManager {
         void init();
         void tick();
     private:
-        backlightLedBase* bg_vector[10];
+        const static uint8_t bg_vector_size = 10;
+        backlightLedBase* bg_vector[bg_vector_size];
         uint8_t num_el_in_bg_vector = 0;
         unsigned long lastBacklightMillis;
 };
