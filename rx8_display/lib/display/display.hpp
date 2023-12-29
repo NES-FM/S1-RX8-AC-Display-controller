@@ -19,7 +19,7 @@ class display {
          * AAA:AAAAAAA.'A."A
          * colon, fullstop 1, prime_marks, fullstop_2
         */
-        void writeToCharDisp(String _lcdInput, bool colon = false, bool fullstop_1 = false, bool fullstop_2 = false, bool prime_marks = false);
+        void writeToCharDisp(String _lcdInput);
 
     private:
         // iconArray for display icons 90-9D, first 5 LSB, calculated via addition
