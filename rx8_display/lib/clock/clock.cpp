@@ -2,9 +2,12 @@
 
 void clock::init() 
 {
-    rtc = new RTC_DS1307();
+    Wire.begin();
 
-    if (rtc->begin()) {
+    Wire.beginTransmission(DS3231_I2C_ADDRESS);
+    uint8_t error = Wire.endTransmission();
+
+    if (error == 0) {
         debugln("RTC Initialized");
         enabled = true;
     }
@@ -14,27 +17,19 @@ void clock::init()
     }
 
     if (enabled) {
-        //rtc.adjust(DateTime(2014, 1, 21, 4, 33, 0)); //a fixed time
-        // rtc->adjust(DateTime(F(__DATE__), F(__TIME__))); // your PC's time. ***** You may need to comment out after 1 upload to set the time - see wiki*******
-        DateTime now = rtc->now();
-        nowHour = now.hour();
-        nowMinute = now.minute();
-        nowSecond = now.second();
-        logln("Clock Initialized and adjusted to: %d:%d:%d. Clock %s", (int)nowHour, (int)nowMinute, (int)nowSecond, rtc->isrunning() ? "is running." : "is NOT running.");
+        readDS3231time();
+
+        logln("Clock Initialized and set to: %d:%d:%d.", (int)nowHour, (int)nowMinute, (int)nowSecond);
     }
 }
 
 void clock::tick(bool twentyfourhour, bool force) 
 {
     if (enabled) {
-        if (millis() - nowTimeCycle >= 10000 || force) // 'DateTime now' takes over 1 milliSecond to return a result, so we don't run it every cycle.
+        if (force || millis() - nowTimeCycle >= 5000) // 'DateTime now' takes over 1 milliSecond to return a result, so we don't run it every cycle.
         {
-            DateTime now = rtc->now();
             nowTimeCycle = millis();
-            nowHour = now.hour();
-            nowMinute = now.minute();
-            nowSecond = now.second();
-            logln("Checking for time: %d:%d:%d. Clock %s", (int)nowHour, (int)nowMinute, (int)nowSecond, rtc->isrunning() ? "is running." : "is NOT running.");
+            readDS3231time();
 
             if (!twentyfourhour && nowHour > 12) // 12 or 24 hour
                 t.curHour = nowHour - 12;
@@ -49,4 +44,39 @@ void clock::tick(bool twentyfourhour, bool force)
             }
         }
     }
+}
+
+// Convert normal decimal numbers to binary coded decimal
+uint8_t clock::decToBcd(uint8_t val) { return( (val/10*16) + (val%10) ); }
+// Convert binary coded decimal to normal decimal numbers
+uint8_t clock::bcdToDec(uint8_t val) { return( (val/16*10) + (val%16) ); }
+
+void clock::setDS3231time(uint8_t second, uint8_t minute, uint8_t hour, uint8_t dayOfWeek, uint8_t dayOfMonth, uint8_t month, uint8_t year)
+{
+    // sets time and date data to DS3231
+    Wire.beginTransmission(DS3231_I2C_ADDRESS);
+    Wire.write(0); // set next input to start at the seconds register
+    Wire.write(decToBcd(second)); // set seconds
+    Wire.write(decToBcd(minute)); // set minutes
+    Wire.write(decToBcd(hour)); // set hours
+    Wire.write(decToBcd(dayOfWeek)); // set day of week (1=Sunday, 7=Saturday)
+    Wire.write(decToBcd(dayOfMonth)); // set date (1 to 31)
+    Wire.write(decToBcd(month)); // set month
+    Wire.write(decToBcd(year)); // set year (0 to 99)
+    Wire.endTransmission();
+}
+void clock::readDS3231time()
+{
+    Wire.beginTransmission(DS3231_I2C_ADDRESS);
+    Wire.write(0); // set DS3231 register pointer to 00h
+    Wire.endTransmission();
+    Wire.requestFrom(DS3231_I2C_ADDRESS, 7);
+    // request seven uint8_ts of data from DS3231 starting from register 00h
+    nowSecond = bcdToDec(Wire.read() & 0x7f);
+    nowMinute = bcdToDec(Wire.read());
+    nowHour = bcdToDec(Wire.read() & 0x3f);
+    dayOfWeek = bcdToDec(Wire.read());
+    dayOfMonth = bcdToDec(Wire.read());
+    month = bcdToDec(Wire.read());
+    year = bcdToDec(Wire.read());
 }
