@@ -6,6 +6,8 @@
 #include "pins.h"
 #include "data_types.h"
 
+#define DEBUG_BUTTONS
+
 class buttonPanel {
     public:
         buttonPanel() {};
@@ -24,6 +26,8 @@ class buttonPanel {
         void checkTempRotation();
         void checkPushedButton();
         void checkMatrixCycle();
+
+        String btn_enum_to_str(btn_enum in);
 
         bool _allow = true;
 
