@@ -1,6 +1,7 @@
 #include <Arduino.h>
 #include "Wire.h"
 #include "SPI.h"
+#include "Smoothed.h"
 
 #include "logger.h"
 #include "command_parser.h"
