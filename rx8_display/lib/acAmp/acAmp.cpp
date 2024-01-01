@@ -77,8 +77,20 @@ void acAmp::shortButtonPress(btn_enum shortButton)
         txData[4] = 0xF4;
         break;
     case Off:
-        txData[1] = 0x81;
-        txData[4] = 0xFB;
+        if (iconsLeds.ampRunning) {
+            txData[1] = 0x81;
+            txData[4] = 0xFB;
+
+            wasAmbientBeforeTurningOff = iconsLeds.displayAmbient;
+        } else {
+            txData[3] = 0x90;
+            txData[4] = 0xEC;
+
+            if (iconsLeds.displayAmbient && !wasAmbientBeforeTurningOff)
+                toggleAmbientTemp();
+
+            overrideRotary = true;
+        }
         break;
     default:
         txData[1] = 0x80;
@@ -88,6 +100,11 @@ void acAmp::shortButtonPress(btn_enum shortButton)
 
 void acAmp::changeRotary(int fan, int temp)
 {
+    if (overrideRotary) {
+        overrideRotary = false;
+        return;
+    }
+
     txData[3] = 0x80;
     if (fan > 0) {
         txData[3] = 0x90;

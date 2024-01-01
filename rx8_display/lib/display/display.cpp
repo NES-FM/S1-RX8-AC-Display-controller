@@ -67,7 +67,7 @@ void display::calculateIcons()
     iconArray[11] += 0x08; // Vertical divider L/H
 
     // AC Icons
-    if (acIcons.ampOn)
+    if (acIcons.ampRunning && acIcons.ampOn)
     {
         // The seated man
         iconArray[12] += 0x01;
@@ -93,7 +93,7 @@ void display::calculateIcons()
             // else
             //     iconArray[6] += 0x08; // degF
         }
-        if (acIcons.ampRunning && !acIcons.displayAmbient)
+        else
         {
             iconArray[13] += 0x02; // decimal place in TMP
             iconArray[6] += 0x04;  // Thermo symbol
@@ -106,6 +106,17 @@ void display::calculateIcons()
             iconArray[8] += 0x08;
         if (acIcons.stateEco)
             iconArray[8] += 0x10;
+    }
+    else if (acIcons.ampOn && !acIcons.ampRunning)
+    {
+        if (acIcons.displayAmbient)
+        {
+            iconArray[6] += 0x02; // AMB
+            // TODO: if (acAmpCentigrade)
+            iconArray[6] += 0x10; // degC
+            // else
+            //     iconArray[6] += 0x08; // degF
+        }
     }
 
     // Midsection Icons

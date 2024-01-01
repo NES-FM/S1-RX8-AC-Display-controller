@@ -44,4 +44,7 @@ class acAmp {
         void interpretTemp();
         void getSerialData();
         void acAmpSend();
+
+        bool wasAmbientBeforeTurningOff = false;
+        bool overrideRotary = false;
 };

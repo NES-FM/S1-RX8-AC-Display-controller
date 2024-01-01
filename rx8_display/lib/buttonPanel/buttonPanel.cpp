@@ -52,9 +52,9 @@ void buttonPanel::tick()
 
 void buttonPanel::setLeds(acShow leds)
 {
-    if (leds.ampOn)
+    if (leds.ampRunning)
     {
-        digitalWrite(frontDemistLED, leds.modeFrontDemist);
+        digitalWrite(frontDemistLED, leds.modeFrontDemist && !leds.modeFeet && !leds.modeFace);
         digitalWrite(rearDemistLED, leds.modeRearDemist);
         digitalWrite(freshAirLED, !leds.modeRecirculate);
         digitalWrite(reCircLED, leds.modeRecirculate);
