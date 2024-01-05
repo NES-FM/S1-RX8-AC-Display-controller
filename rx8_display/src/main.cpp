@@ -109,6 +109,7 @@ void loop()
     // Setting backlight
     backlight.tick();
 
+    // Print everything the esp loggs
     if (Serial3.available()) {
         Serial.write(Serial3.read());
     }
@@ -139,6 +140,7 @@ void longButtonAction(btn_enum longButton) {
 }
 
 unsigned long lastMidsectionMillis = 0;
+char ch = 0;
 
 void midsectionHandler() {
     if (millis() - lastMidsectionMillis > 300) {
@@ -147,7 +149,7 @@ void midsectionHandler() {
         bat_volt.add((double)analogRead(ignitionVoltage) * 0.01487643158529234); // Map from 0-1024 to 0-15   :    12.34 real => 12.0-12.3 measured
         double voltage = bat_volt.get();
 
-        if (voltage > 12.5) { // Motor Running
+        if (voltage > 13.5) { // Motor Running
             double motorTemp = 100; // TODO: Get motor temperature via canbus
 
             if (motorTemp <= 90) { // Motor Cold
@@ -156,7 +158,7 @@ void midsectionHandler() {
                 disp.writeToCharDisp("TMP " + String(tempStr) + "°C");
                 midIcons.mid_section_colon = true;
             } else { // Motor Hot
-                disp.writeToCharDisp("MAZDA RX-8"); // TODO: Calculate fuel consumption by getting values via canbus
+                disp.writeToCharDisp("Mazda RX-8"); // TODO: Calculate fuel consumption by getting values via canbus
             }
         } else { // Motor Off
             char voltageStr[6];
@@ -166,6 +168,15 @@ void midsectionHandler() {
         }
         lastMidsectionMillis = millis();
     }
+
+    // if (millis() - lastMidsectionMillis > 1000) {
+    //     lastMidsectionMillis = millis();
+
+    //     midIcons.mid_section_colon = true;
+    //     disp.writeToCharDisp(String((int)ch) + " " + ch);
+    //     ch++;
+    // }
+
 }
 
 void execute_command(String cmd) {
