@@ -22,8 +22,8 @@ class acAmp {
 
   private:
     // acAmpTX
-    uint8_t txData[ 5 ];
-    const uint8_t txDefault[ 5 ] = {
+    uint8_t txData[5];
+    const uint8_t txDefault[5] = {
         0x04, 0x80, 0x80, 0x80,
         0xFC }; // Default data for the A\C amplifier TX; basicly it means I am here and no buttons have been pressed.
     unsigned long lastTx;
@@ -33,7 +33,7 @@ class acAmp {
     // RX data stuff
     uint8_t curRxByte = 0;
     unsigned int receivedByte;
-    unsigned int rxData[ 6 ]; // Where we keep our inbound data.
+    unsigned int rxData[6]; // Where we keep our inbound data.
     bool rxChanged = true;
     bool messageToProcess = false;
 

@@ -19,8 +19,8 @@ void display::init() {
 void display::sendIcons() {
     calculateIcons();
     for ( int i = 0; i < 14; i++ ) {
-        lcdDisplaySendIconDisplay( iconRegistryOffset + i, iconArray[ i ] );
-        iconArray[ i ] = 0;
+        lcdDisplaySendIconDisplay( iconRegistryOffset + i, iconArray[i] );
+        iconArray[i] = 0;
     }
 }
 
@@ -59,51 +59,51 @@ void display::calculateIcons() {
     iconCalculateFan( acIcons.fanSpeed );
 
     // Statics
-    iconArray[ 1 ] += 0x10;  // Vertical divider R/H
-    iconArray[ 3 ] += 0x04;  // HH:MM Divider
-    iconArray[ 11 ] += 0x08; // Vertical divider L/H
+    iconArray[1] += 0x10;  // Vertical divider R/H
+    iconArray[3] += 0x04;  // HH:MM Divider
+    iconArray[11] += 0x08; // Vertical divider L/H
 
     // AC Icons
     if ( acIcons.ampRunning && acIcons.ampOn ) {
         // The seated man
-        iconArray[ 12 ] += 0x01;
+        iconArray[12] += 0x01;
         if ( acIcons.modeFrontDemist )
-            iconArray[ 12 ] += 0x02;
+            iconArray[12] += 0x02;
         if ( acIcons.modeFeet )
-            iconArray[ 12 ] += 0x04;
+            iconArray[12] += 0x04;
         if ( acIcons.modeFace )
-            iconArray[ 13 ] += 0x04;
+            iconArray[13] += 0x04;
 
         // Car Icon
         if ( acIcons.modeRecirculate )
-            iconArray[ 7 ] += 0x09; // Fresh air arrow + Car logo
+            iconArray[7] += 0x09; // Fresh air arrow + Car logo
         else
-            iconArray[ 7 ] += 0x05; // Recirc arrow + Car logo
+            iconArray[7] += 0x05; // Recirc arrow + Car logo
 
         // Ambient / Set Temperature show
         if ( acIcons.displayAmbient ) {
-            iconArray[ 6 ] += 0x02; // AMB
+            iconArray[6] += 0x02; // AMB
             // TODO: if (acAmpCentigrade)
-            iconArray[ 6 ] += 0x10; // degC
+            iconArray[6] += 0x10; // degC
             // else
             //     iconArray[6] += 0x08; // degF
         } else {
-            iconArray[ 13 ] += 0x02; // decimal place in TMP
-            iconArray[ 6 ] += 0x04;  // Thermo symbol
+            iconArray[13] += 0x02; // decimal place in TMP
+            iconArray[6] += 0x04;  // Thermo symbol
         }
 
         // AC States
         if ( acIcons.stateAuto )
-            iconArray[ 7 ] += 0x10;
+            iconArray[7] += 0x10;
         if ( acIcons.stateAc )
-            iconArray[ 8 ] += 0x08;
+            iconArray[8] += 0x08;
         if ( acIcons.stateEco )
-            iconArray[ 8 ] += 0x10;
+            iconArray[8] += 0x10;
     } else if ( acIcons.ampOn && !acIcons.ampRunning ) {
         if ( acIcons.displayAmbient ) {
-            iconArray[ 6 ] += 0x02; // AMB
+            iconArray[6] += 0x02; // AMB
             // TODO: if (acAmpCentigrade)
-            iconArray[ 6 ] += 0x10; // degC
+            iconArray[6] += 0x10; // degC
             // else
             //     iconArray[6] += 0x08; // degF
         }
@@ -111,67 +111,67 @@ void display::calculateIcons() {
 
     // Midsection Icons
     if ( midIcons.CD_IN )
-        iconArray[ 3 ] += 0x10;
+        iconArray[3] += 0x10;
     if ( midIcons.MD_IN )
-        iconArray[ 4 ] += 0x10;
+        iconArray[4] += 0x10;
     if ( midIcons.Dolby )
-        iconArray[ 5 ] += 0x01;
+        iconArray[5] += 0x01;
     if ( midIcons.ST )
-        iconArray[ 5 ] += 0x10;
+        iconArray[5] += 0x10;
     if ( midIcons.AF )
-        iconArray[ 6 ] += 0x01;
+        iconArray[6] += 0x01;
     if ( midIcons.PTY )
-        iconArray[ 7 ] += 0x02;
+        iconArray[7] += 0x02;
     if ( midIcons.RPT )
-        iconArray[ 8 ] += 0x02;
+        iconArray[8] += 0x02;
     if ( midIcons.Auto_M )
-        iconArray[ 10 ] += 0x01;
+        iconArray[10] += 0x01;
     if ( midIcons.TP )
-        iconArray[ 10 ] += 0x02;
+        iconArray[10] += 0x02;
     if ( midIcons.TA )
-        iconArray[ 10 ] += 0x04;
+        iconArray[10] += 0x04;
     if ( midIcons.RDM )
-        iconArray[ 10 ] += 0x08;
+        iconArray[10] += 0x08;
     if ( midIcons.fullstop_char_10_11 )
-        iconArray[ 10 ] += 0x10;
+        iconArray[10] += 0x10;
     if ( midIcons.min_sec_prime_marks )
-        iconArray[ 11 ] += 0x04;
+        iconArray[11] += 0x04;
     if ( midIcons.fullstop_char_11_12 )
-        iconArray[ 11 ] += 0x10;
+        iconArray[11] += 0x10;
     if ( midIcons.mid_section_colon )
-        iconArray[ 13 ] += 0x10;
+        iconArray[13] += 0x10;
 }
 
 // Set fan speed icons including the base outline
 void display::iconCalculateFan( byte _fanSpeed ) {
     switch ( _fanSpeed ) {
     case 1:
-        iconArray[ 9 ] += 0x06;
+        iconArray[9] += 0x06;
         break;
     case 2:
-        iconArray[ 9 ] += 0x0E;
+        iconArray[9] += 0x0E;
         break;
     case 3:
-        iconArray[ 9 ] += 0x1E;
+        iconArray[9] += 0x1E;
         break;
     case 4:
-        iconArray[ 9 ] += 0x1E;
-        iconArray[ 8 ] += 0x01;
+        iconArray[9] += 0x1E;
+        iconArray[8] += 0x01;
         break;
     case 5:
-        iconArray[ 9 ] += 0x1E;
-        iconArray[ 8 ] += 0x05;
+        iconArray[9] += 0x1E;
+        iconArray[8] += 0x05;
         break;
     case 6:
-        iconArray[ 9 ] += 0x1E;
-        iconArray[ 8 ] += 0x05;
-        iconArray[ 13 ] += 0x08;
+        iconArray[9] += 0x1E;
+        iconArray[8] += 0x05;
+        iconArray[13] += 0x08;
         break;
     case 7:
-        iconArray[ 9 ] += 0x1E;
-        iconArray[ 8 ] += 0x05;
-        iconArray[ 13 ] += 0x08;
-        iconArray[ 11 ] += 0x02;
+        iconArray[9] += 0x1E;
+        iconArray[8] += 0x05;
+        iconArray[13] += 0x08;
+        iconArray[11] += 0x02;
         break;
     }
 }
@@ -182,118 +182,118 @@ void display::iconCalculateMinute( byte _digit, byte _value ) {
     {
         switch ( _value ) {
         case 0:
-            iconArray[ 0 ] += 0x18;
-            iconArray[ 2 ] += 0x07;
-            iconArray[ 3 ] += 0x08;
+            iconArray[0] += 0x18;
+            iconArray[2] += 0x07;
+            iconArray[3] += 0x08;
             break;
         case 1:
-            iconArray[ 0 ] += 0x08;
-            iconArray[ 2 ] += 0x04;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x08;
+            iconArray[2] += 0x04;
+            iconArray[3] += 0x00;
             break;
         case 2:
-            iconArray[ 0 ] += 0x10;
-            iconArray[ 2 ] += 0x0E;
-            iconArray[ 3 ] += 0x08;
+            iconArray[0] += 0x10;
+            iconArray[2] += 0x0E;
+            iconArray[3] += 0x08;
             break;
         case 3:
-            iconArray[ 0 ] += 0x18;
-            iconArray[ 2 ] += 0x0E;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x18;
+            iconArray[2] += 0x0E;
+            iconArray[3] += 0x00;
             break;
         case 4:
-            iconArray[ 0 ] += 0x08;
-            iconArray[ 2 ] += 0x0D;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x08;
+            iconArray[2] += 0x0D;
+            iconArray[3] += 0x00;
             break;
         case 5:
-            iconArray[ 0 ] += 0x18;
-            iconArray[ 2 ] += 0x0B;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x18;
+            iconArray[2] += 0x0B;
+            iconArray[3] += 0x00;
             break;
         // we should never see these for Mm minute, but just incase someone wants them for an alternate purpose.
         case 6:
-            iconArray[ 0 ] += 0x18;
-            iconArray[ 2 ] += 0x0B;
-            iconArray[ 3 ] += 0x08;
+            iconArray[0] += 0x18;
+            iconArray[2] += 0x0B;
+            iconArray[3] += 0x08;
             break;
         case 7:
-            iconArray[ 0 ] += 0x08;
-            iconArray[ 2 ] += 0x06;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x08;
+            iconArray[2] += 0x06;
+            iconArray[3] += 0x00;
             break;
         case 8:
-            iconArray[ 0 ] += 0x18;
-            iconArray[ 2 ] += 0x0F;
-            iconArray[ 3 ] += 0x08;
+            iconArray[0] += 0x18;
+            iconArray[2] += 0x0F;
+            iconArray[3] += 0x08;
             break;
         case 9:
-            iconArray[ 0 ] += 0x08;
-            iconArray[ 2 ] += 0x0F;
-            iconArray[ 3 ] += 0x00;
+            iconArray[0] += 0x08;
+            iconArray[2] += 0x0F;
+            iconArray[3] += 0x00;
             break;
         }
     } else if ( _digit == 2 ) // mM
     {
         switch ( _value ) {
         case 0:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x07;
-            iconArray[ 2 ] += 0x10;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x07;
+            iconArray[2] += 0x10;
             break;
         case 1:
-            iconArray[ 0 ] += 0x01;
-            iconArray[ 1 ] += 0x04;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x01;
+            iconArray[1] += 0x04;
+            iconArray[2] += 0x00;
             break;
         case 2:
-            iconArray[ 0 ] += 0x02;
-            iconArray[ 1 ] += 0x0E;
-            iconArray[ 2 ] += 0x10;
+            iconArray[0] += 0x02;
+            iconArray[1] += 0x0E;
+            iconArray[2] += 0x10;
             break;
         case 3:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x0E;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x0E;
+            iconArray[2] += 0x00;
             break;
         case 4:
-            iconArray[ 0 ] += 0x01;
-            iconArray[ 1 ] += 0x0D;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x01;
+            iconArray[1] += 0x0D;
+            iconArray[2] += 0x00;
             break;
         case 5:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x0B;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x0B;
+            iconArray[2] += 0x00;
             break;
         case 6:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x0B;
-            iconArray[ 2 ] += 0x10;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x0B;
+            iconArray[2] += 0x10;
             break;
         case 7:
-            iconArray[ 0 ] += 0x01;
-            iconArray[ 1 ] += 0x06;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x01;
+            iconArray[1] += 0x06;
+            iconArray[2] += 0x00;
             break;
         case 8:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x0F;
-            iconArray[ 2 ] += 0x10;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x0F;
+            iconArray[2] += 0x10;
             break;
         case 9:
-            iconArray[ 0 ] += 0x03;
-            iconArray[ 1 ] += 0x0F;
-            iconArray[ 2 ] += 0x00;
+            iconArray[0] += 0x03;
+            iconArray[1] += 0x0F;
+            iconArray[2] += 0x00;
             break;
         }
     }
 }
 
 void display::tempCalculate() {
-    sevenSegmentCalculate( 0x01, acIcons.tempDigits[ 0 ] );
-    sevenSegmentCalculate( 0x04, acIcons.tempDigits[ 1 ] );
-    sevenSegmentCalculate( 0x02, acIcons.tempDigits[ 2 ] );
+    sevenSegmentCalculate( 0x01, acIcons.tempDigits[0] );
+    sevenSegmentCalculate( 0x04, acIcons.tempDigits[1] );
+    sevenSegmentCalculate( 0x02, acIcons.tempDigits[2] );
 }
 
 // Calculate the seven segmeent display values that are generated via CGRam for Hh, hH, Tmp, tMp, tmP
@@ -302,72 +302,72 @@ void display::tempCalculate() {
 void display::sevenSegmentCalculate( byte _column, byte _value ) {
     switch ( _value ) {
     case 0:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 4 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[4] += _column;
+        sevenSegmentArray[5] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 1:
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[5] += _column;
         break;
     case 2:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 4 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[4] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 3:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[5] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 4:
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[5] += _column;
         break;
     case 5:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[5] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 6:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 4 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[4] += _column;
+        sevenSegmentArray[5] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 7:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[5] += _column;
         break;
     case 8:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 4 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
-        sevenSegmentArray[ 6 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[4] += _column;
+        sevenSegmentArray[5] += _column;
+        sevenSegmentArray[6] += _column;
         break;
     case 9:
-        sevenSegmentArray[ 0 ] += _column;
-        sevenSegmentArray[ 1 ] += _column;
-        sevenSegmentArray[ 2 ] += _column;
-        sevenSegmentArray[ 3 ] += _column;
-        sevenSegmentArray[ 5 ] += _column;
+        sevenSegmentArray[0] += _column;
+        sevenSegmentArray[1] += _column;
+        sevenSegmentArray[2] += _column;
+        sevenSegmentArray[3] += _column;
+        sevenSegmentArray[5] += _column;
         break;
     }
 }
@@ -436,11 +436,11 @@ void display::lcdDisplayPopulateCgramAddress( byte _CgramAddress ) // Set the CG
     {
         PORTL |= ( 1 << PL0 );
         PORTB &= ~( 1 << PB0 );
-        SPI.transfer( sevenSegmentArray[ i ] );
+        SPI.transfer( sevenSegmentArray[i] );
         PORTB |= ( 1 << PB0 );
         delayMicroseconds( 42 );
         PORTL &= ~( 1 << PL0 );
-        sevenSegmentArray[ i ] = 0;
+        sevenSegmentArray[i] = 0;
     }
     lcdDisplayCgramToDdram( 0x00, 0x8C ); // Populate into DDRam address
     lcdDisplayCgramToDdram( 0x00, 0x8D ); // Populate into DDRam address

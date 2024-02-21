@@ -4,7 +4,7 @@ backlightLedManager::backlightLedManager() {}
 
 void backlightLedManager::registerBackgroundLed( backlightLedBase *item ) {
     if ( num_el_in_bg_vector < bg_vector_size ) {
-        bg_vector[ num_el_in_bg_vector ] = item;
+        bg_vector[num_el_in_bg_vector] = item;
         num_el_in_bg_vector++;
     } else {
         logln( "ERROR!!! BG_VECTOR IS NOT BIG ENOUGH" );
@@ -14,7 +14,7 @@ void backlightLedManager::registerBackgroundLed( backlightLedBase *item ) {
 
 void backlightLedManager::init() {
     for ( int i = 0; i < num_el_in_bg_vector; i++ ) {
-        bg_vector[ i ]->init();
+        bg_vector[i]->init();
     }
 
     pinMode( backlightNegative, INPUT );
@@ -29,7 +29,7 @@ void backlightLedManager::tick() {
         uint16_t brightness = constrain( map( an, 100, 800, UINT16_MAX, 0 ), 0, UINT16_MAX );
         // Serial.print(an); Serial.print("\t"); Serial.println(brightness);
         for ( int i = 0; i < num_el_in_bg_vector; i++ ) {
-            bg_vector[ i ]->setValue( on, brightness );
+            bg_vector[i]->setValue( on, brightness );
         }
     }
 }

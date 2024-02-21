@@ -38,7 +38,7 @@ class confMenu {
 
   private:
     const static uint8_t conf_pages_size = 10;
-    confPage *conf_pages[ conf_pages_size ];
+    confPage *conf_pages[conf_pages_size];
     uint8_t num_el_in_conf_pages = 0;
     uint8_t current_page = 0;
     int relValue = 0;

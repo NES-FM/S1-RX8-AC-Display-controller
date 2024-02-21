@@ -1,6 +1,6 @@
 #include "logger.h"
 
-char _logger_ser_buf[ LOGGER_BUFFLEN ];
+char _logger_ser_buf[LOGGER_BUFFLEN];
 unsigned int _logger_ser_buf_idx = 0;
 
 void logger_init() {
@@ -16,14 +16,14 @@ String logger_tick() {
             // Message coming in (check not terminating character) and guard for over message size
             if ( inByte != '\n' && ( _logger_ser_buf_idx < LOGGER_BUFFLEN - 1 ) ) {
                 // Add the incoming byte to our message
-                _logger_ser_buf[ _logger_ser_buf_idx ] = inByte;
+                _logger_ser_buf[_logger_ser_buf_idx] = inByte;
                 _logger_ser_buf_idx++;
 
                 Serial.print( inByte ); // INTENDED
             }
             // Full message received...
             else {
-                _logger_ser_buf[ _logger_ser_buf_idx ] = '\0';
+                _logger_ser_buf[_logger_ser_buf_idx] = '\0';
 
                 // Reset for the next message
                 _logger_ser_buf_idx = 0;
@@ -38,7 +38,7 @@ void logger_log_formatted_string( const char *format, ... ) {
     va_list args;
     va_start( args, format );
 
-    char str[ 256 ];
+    char str[256];
     vsprintf( str, format, args );
 
     Serial.print( str ); // INTENDED

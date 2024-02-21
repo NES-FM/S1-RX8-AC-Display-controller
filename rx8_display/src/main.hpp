@@ -12,6 +12,7 @@
 #include "clock.hpp"
 #include "confMenu.hpp"
 #include "display.hpp"
+#include "espComm.hpp"
 
 void shortButtonAction( btn_enum shortButton );
 void longButtonAction( btn_enum longButton );

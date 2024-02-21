@@ -2,7 +2,7 @@
 
 void confMenu::registerPage( confPage *item ) {
     if ( num_el_in_conf_pages < conf_pages_size ) {
-        conf_pages[ num_el_in_conf_pages ] = item;
+        conf_pages[num_el_in_conf_pages] = item;
         num_el_in_conf_pages++;
     } else {
         logln( "ERROR!!! CONF_PAGES IS NOT BIG ENOUGH" );
@@ -70,7 +70,7 @@ void confMenu::menuTick() {
         else if ( current_page >= conf_pages_size )
             current_page = 0;
 
-        while ( !conf_pages[ current_page ] ) {
+        while ( !conf_pages[current_page] ) {
             current_page++;
             if ( current_page == 255 )
                 current_page = num_el_in_conf_pages - 1;
@@ -78,9 +78,9 @@ void confMenu::menuTick() {
                 current_page = 0;
         }
 
-        outputText = conf_pages[ current_page ]->menuName;
+        outputText = conf_pages[current_page]->menuName;
     } else {
-        confPage *page = conf_pages[ current_page ];
+        confPage *page = conf_pages[current_page];
         page->changeValue( relValue );
         if ( enter ) {
             if ( page->pressEnter() ) {

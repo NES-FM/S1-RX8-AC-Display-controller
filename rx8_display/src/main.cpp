@@ -6,6 +6,7 @@ acAmp ac;
 display disp;
 clock time;
 backlightLedManager backlight;
+espComm esp( Serial3 );
 
 midsectionIcons midIcons;
 
@@ -17,8 +18,7 @@ void setup() {
     time.init();
     ac.init();
     disp.init();
-
-    Serial3.begin( 115200 );
+    esp.init();
 
     backlight.registerBackgroundLed( new digitalBacklightLed( footBacklight ) );
     backlight.registerBackgroundLed( new pwmBacklightLed( hazardBacklight ) );
@@ -92,10 +92,7 @@ void loop() {
     // Setting backlight
     backlight.tick();
 
-    // Print everything the esp loggs
-    if ( Serial3.available() ) {
-        Serial.write( Serial3.read() );
-    }
+    esp.tick();
 }
 
 void longButtonAction( btn_enum longButton ) {
@@ -136,7 +133,7 @@ void midsectionHandler() {
             double motorTemp = 100; // TODO: Get motor temperature via canbus
 
             if ( motorTemp <= 90 ) { // Motor Cold
-                char tempStr[ 6 ];
+                char tempStr[6];
                 dtostrf( motorTemp, 4, 1, tempStr );
                 disp.writeToCharDisp( "TMP " + String( tempStr ) + "°C" );
                 midIcons.mid_section_colon = true;
@@ -144,7 +141,7 @@ void midsectionHandler() {
                 disp.writeToCharDisp( "Mazda RX-8" ); // TODO: Calculate fuel consumption by getting values via canbus
             }
         } else { // Motor Off
-            char voltageStr[ 6 ];
+            char voltageStr[6];
             dtostrf( voltage, 4, 1, voltageStr );
             disp.writeToCharDisp( "BAT " + String( voltageStr ) + "V" );
             midIcons.mid_section_colon = true;
@@ -167,17 +164,17 @@ void execute_command( String cmd ) {
 
     splitstring splitted = split_string_at_space( cmd );
 
-    String top_level_command = splitted.data[ 0 ];
+    String top_level_command = splitted.data[0];
     String first_arg = "";
     String second_arg = "";
     String third_arg = "";
 
     if ( splitted.length > 1 )
-        first_arg = splitted.data[ 1 ];
+        first_arg = splitted.data[1];
     if ( splitted.length > 2 )
-        second_arg = splitted.data[ 2 ];
+        second_arg = splitted.data[2];
     if ( splitted.length > 3 )
-        third_arg = splitted.data[ 3 ];
+        third_arg = splitted.data[3];
 
     String out;
 
@@ -192,7 +189,7 @@ void execute_command( String cmd ) {
         } else if ( first_arg == "writehex" ) {
             String toWrite;
             toWrite = "A";
-            toWrite[ 0 ] = (char)second_arg.toInt();
+            toWrite[0] = (char)second_arg.toInt();
             disp.writeToCharDisp( toWrite );
         }
     } else {

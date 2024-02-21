@@ -24,9 +24,9 @@ class display {
 
   private:
     // iconArray for display icons 90-9D, first 5 LSB, calculated via addition
-    uint8_t iconArray[ 14 ] = { 0 };
+    uint8_t iconArray[14] = { 0 };
     const uint8_t iconRegistryOffset = 0x90;
-    uint8_t sevenSegmentArray[ 7 ] = { 0 };
+    uint8_t sevenSegmentArray[7] = { 0 };
 
     acShow acIcons;
     midsectionIcons midIcons;

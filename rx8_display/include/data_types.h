@@ -2,14 +2,14 @@
 
 enum btn_enum {
     no_button = 0,
-    Auto = 1, // Auto switch
-    Mode = 2, // Mode switch
-    AC = 3, // A/C switch
+    Auto = 1,        // Auto switch
+    Mode = 2,        // Mode switch
+    AC = 3,          // A/C switch
     frontDemist = 4, // frontDemist switch
-    rearDemist = 5, // rearDemist switch
-    AirSource = 6, // AirSource switch
-    _invalid = 7, // Error if we get here with RX8
-    Off = 8 // Off switch
+    rearDemist = 5,  // rearDemist switch
+    AirSource = 6,   // AirSource switch
+    _invalid = 7,    // Error if we get here with RX8
+    Off = 8          // Off switch
 };
 struct buttonState {
     int fanRotation;
