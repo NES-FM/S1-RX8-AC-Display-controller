@@ -9,8 +9,11 @@ backlightLedManager backlight;
 espComm esp( Serial3 );
 
 midsectionIcons midIcons;
+menu mainMenu;
 
 Smoothed<double> bat_volt;
+
+float motor_temp = 100;
 
 void setup() {
     logger_init();
@@ -23,6 +26,10 @@ void setup() {
     backlight.registerBackgroundLed( new digitalBacklightLed( footBacklight ) );
     backlight.registerBackgroundLed( new pwmBacklightLed( hazardBacklight ) );
     backlight.init();
+
+    mainMenu.registerPage( new menuPage() ); // Set Page 0 to a dummy page
+    mainMenu.registerPage( new value_func_page( "BAT", getBatVolt, "V", 1 ) );
+    mainMenu.registerPage( new value_ptr_page( "TMP", &motor_temp, "C", 1 ) );
 
     bat_volt.begin( SMOOTHED_AVERAGE, 10 );
 }
@@ -104,58 +111,56 @@ void longButtonAction( btn_enum longButton ) {
         conf.activate();
         break;
     case AC:
+        mainMenu.next();
         break;
     case frontDemist:
+        mainMenu.previous();
         break;
     case rearDemist:
+        mainMenu.next();
         break;
     case AirSource:
+        mainMenu.previous();
         break;
     case Off:
         break;
     default:
         break;
     }
+    buttons.lastTickButtonState.longPushButton = no_button;
 }
 
 unsigned long lastMidsectionMillis = 0;
-char ch = 0;
 
 void midsectionHandler() {
     if ( millis() - lastMidsectionMillis > 300 ) {
-        midIcons.mid_section_colon = false;
+        midIcons.mid_section_colon = true;
 
         bat_volt.add( (double)analogRead( ignitionVoltage ) *
                       0.01487643158529234 ); // Map from 0-1024 to 0-15   :    12.34 real => 12.0-12.3 measured
-        double voltage = bat_volt.get();
 
-        if ( voltage > 13.5 ) {     // Motor Running
-            double motorTemp = 100; // TODO: Get motor temperature via canbus
+        if ( mainMenu.cur_page_num() == 0 ) {
+            midIcons.Dolby = false;
 
-            if ( motorTemp <= 90 ) { // Motor Cold
-                char tempStr[6];
-                dtostrf( motorTemp, 4, 1, tempStr );
-                disp.writeToCharDisp( "TMP " + String( tempStr ) + "°C" );
-                midIcons.mid_section_colon = true;
-            } else {                                  // Motor Hot
-                disp.writeToCharDisp( "Mazda RX-8" ); // TODO: Calculate fuel consumption by getting values via canbus
+            if ( getBatVolt() > 13.5 ) { // Motor Running
+                motor_temp = 100;        // TODO: Get motor temperature via canbus
+
+                if ( motor_temp <= 90 ) { // Motor Cold
+                    disp.writeToCharDisp( mainMenu.drawPage( 2 ) );
+                } else { // Motor Hot
+                    midIcons.mid_section_colon = false;
+                    disp.writeToCharDisp( "Mazda RX-8" ); // TODO: Calculate fuel consumption
+                }
+            } else { // Motor Off
+                disp.writeToCharDisp( mainMenu.drawPage( 1 ) );
             }
-        } else { // Motor Off
-            char voltageStr[6];
-            dtostrf( voltage, 4, 1, voltageStr );
-            disp.writeToCharDisp( "BAT " + String( voltageStr ) + "V" );
-            midIcons.mid_section_colon = true;
+        } else {
+            midIcons.Dolby = true;
+            disp.writeToCharDisp( mainMenu.draw() );
         }
+
         lastMidsectionMillis = millis();
     }
-
-    // if (millis() - lastMidsectionMillis > 1000) {
-    //     lastMidsectionMillis = millis();
-
-    //     midIcons.mid_section_colon = true;
-    //     disp.writeToCharDisp(String((int)ch) + " " + ch);
-    //     ch++;
-    // }
 }
 
 void execute_command( String cmd ) {
@@ -197,3 +202,5 @@ void execute_command( String cmd ) {
     }
     logln( "%s", cmd.c_str() );
 }
+
+float getBatVolt() { return bat_volt.get(); }

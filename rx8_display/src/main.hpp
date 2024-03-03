@@ -13,8 +13,11 @@
 #include "confMenu.hpp"
 #include "display.hpp"
 #include "espComm.hpp"
+#include "menu.hpp"
 
-void shortButtonAction( btn_enum shortButton );
+// void shortButtonAction( btn_enum shortButton );
 void longButtonAction( btn_enum longButton );
 void midsectionHandler();
 void execute_command( String cmd );
+
+float getBatVolt();
