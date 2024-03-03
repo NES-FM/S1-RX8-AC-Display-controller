@@ -129,7 +129,7 @@ espComm::status espComm::handleMessage() {
 
         log_inline_begin();
         log_inline( "requestStoreData: keylen: %d, key: \"%s\", datalen: %d, data:", keylen, key, datalen );
-        for ( int i = 0; i < datalen; i++ ) {
+        for ( unsigned int i = 0; i < datalen; i++ ) {
             log_inline( " %#04x", data[i] );
         }
         log_inline_end();
@@ -138,5 +138,8 @@ espComm::status espComm::handleMessage() {
         delete data;
     } else {
         logln( "default reached with id %d=%d", (messageIds)rxMessageHeader[2], id );
+        return FAILURE;
     }
+
+    return SUCCESS;
 }
