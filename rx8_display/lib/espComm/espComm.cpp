@@ -69,8 +69,10 @@ espComm::status espComm::sendMessage() {
 }
 
 espComm::status espComm::checkForMessage() {
-    if ( ser.available() >= 4 )
+    if ( ser.available() >= 4 ) {
+        // debugln("Message from ESP Received");
         return SUCCESS;
+    }
     return WAITING;
 }
 
@@ -81,11 +83,21 @@ espComm::status espComm::readMessage() {
         return s;
 
     int i = 0;
+    int ser_not_av_count = 0;
     rxMessageHeader[3] = 99;
     delete rxMessageContent;
-    while ( ser.available() && i < rxMessageHeader[3] ) {
+    while ( i < rxMessageHeader[3] ) {
+        // If no data is available, wait a bit, it might just not be there yet
+        while (!ser.available() && ser_not_av_count < 200) {
+            delay(1);
+            ser_not_av_count++;
+        }
+        if (ser_not_av_count >= 200) break;
+        ser_not_av_count = 0;
+
         if ( i < 4 ) {
             rxMessageHeader[i] = ser.read();
+            // debugln("%d: %d", i, (int)rxMessageHeader[i]);
             if ( i == 0 && rxMessageHeader[0] != 0x00 )
                 continue;
             else if ( i == 1 && rxMessageHeader[1] != 0xFF ) {
@@ -99,8 +111,15 @@ espComm::status espComm::readMessage() {
 
         i++;
     }
-    if ( i != rxMessageHeader[3] )
+    if ( i != rxMessageHeader[3] ) {
+        debugln("ERROR: i=%d != len=%d", i, rxMessageHeader[3]);
+        debug_inline_begin();
+        debug_inline("Received data: ");
+        for (int jk = 0; jk < rxMessageHeader[3]; jk++)
+            debug_inline("%x", (char)rxMessageContent[jk]);
+        debug_inline_end();
         return FAILURE;
+    }
 
     return SUCCESS;
 }
