@@ -19,8 +19,8 @@ const char *pathToFileName( const char *path );
 #define log_esp( format, ... ) logger_log_formatted_string( "[ESP]" format, ##__VA_ARGS__ )
 
 #ifdef debug
-#define debugln( format, ... ) logger_log_formatted_string( LOGGER_LOG_FORMAT( format ), ##__VA_ARGS__ )
-#define debug_inline_begin() logger_log_formatted_string( LOGGER_LOG_FORMAT_INLINE( "" ) )
+#define debugln( format, ... ) logger_log_formatted_string( "[ARD]" LOGGER_LOG_FORMAT( format ), ##__VA_ARGS__ )
+#define debug_inline_begin() logger_log_formatted_string( "[ARD]" LOGGER_LOG_FORMAT_INLINE( "" ) )
 #define debug_inline( format, ... ) logger_log_formatted_string( format, ##__VA_ARGS__ )
 #define debug_inline_end() logger_log_formatted_string( "\r\n" )
 #else
