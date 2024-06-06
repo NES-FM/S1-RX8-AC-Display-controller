@@ -38,7 +38,9 @@ digitalBacklightLed::digitalBacklightLed( int pin ) : backlightLedBase() { _pin 
 
 void digitalBacklightLed::init() { pinMode( _pin, OUTPUT ); }
 
-void digitalBacklightLed::setValue( bool on, uint16_t brightness ) { digitalWrite( _pin, on ); }
+void digitalBacklightLed::setValue( bool on, uint16_t brightness ) { 
+    digitalWrite( _pin, on && brightness > 0.25*UINT16_MAX ); 
+}
 
 pwmBacklightLed::pwmBacklightLed( int pin ) {
     if ( 0 <= pin && pin <= 13 ) {

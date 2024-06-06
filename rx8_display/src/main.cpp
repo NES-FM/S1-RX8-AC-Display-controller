@@ -24,7 +24,7 @@ void setup() {
     esp.init();
 
     backlight.registerBackgroundLed( new digitalBacklightLed( footBacklight ) );
-    backlight.registerBackgroundLed( new pwmBacklightLed( hazardBacklight ) );
+    backlight.registerBackgroundLed( new digitalBacklightLed( hazardBacklight ) );
     backlight.init();
 
     mainMenu.registerPage( new menuPage() ); // Set Page 0 to a dummy page
