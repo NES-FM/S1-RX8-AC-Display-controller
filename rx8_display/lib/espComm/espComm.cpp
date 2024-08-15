@@ -116,7 +116,7 @@ espComm::status espComm::readMessage() {
         debug_inline_begin();
         debug_inline("Received data: ");
         for (int jk = 0; jk < rxMessageHeader[3]; jk++)
-            debug_inline("%x", (char)rxMessageContent[jk]);
+            debug_inline("%#04x ", (int)rxMessageContent[jk]);
         debug_inline_end();
         return FAILURE;
     }
@@ -131,7 +131,7 @@ espComm::status espComm::handleMessage() {
     } else if ( id == sendDebugData ) {
         char *str = (char *)memcpy( malloc( rxMessageHeader[3] - 3 ), rxMessageContent, rxMessageHeader[3] - 4 );
         str[rxMessageHeader[3] - 4] = 0;
-        log_esp( "%s\r\n", str );
+        log_esp( "%s", str );
         delete str;
     } else if ( id == responseOk ) {
         logln( "responseOk" );
