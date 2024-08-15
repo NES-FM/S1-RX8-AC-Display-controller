@@ -1,8 +1,6 @@
 #include "clock.hpp"
 
 void clock::init() {
-    Wire.begin();
-
     Wire.beginTransmission( DS3231_I2C_ADDRESS );
     uint8_t error = Wire.endTransmission();
 

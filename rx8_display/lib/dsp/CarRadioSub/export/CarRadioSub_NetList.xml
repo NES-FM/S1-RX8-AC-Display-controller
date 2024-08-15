@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- *
+ * This software is distributed in the hope that it will be useful,
+ * but is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+ * CONDITIONS OF ANY KIND, without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ * This software may only be used to program products purchased from
+ * Analog Devices for incorporation by you into audio products that
+ * are intended for resale to audio product end users. This software
+ * may not be distributed whole or in any part to third parties.
+ *
+ * Copyright © 2024 Analog Devices, Inc. All rights reserved.
+ */
+-->
+<!--NetList XML file-->
+<NetList>
+    <IC name=" IC 1 " type="DSPSigma100">
+        <Schematic>
+            <Algorithm name="ICSigma100In1" friendlyname="170x\140x input " cell="Input1 " location="{X=98, Y=232} " Growth="10 " GrowthB="0 " FS="48000">
+                <Link pin="O_C0_A0_P1_out" dir="out" link="Link9" />
+                <Link pin="O_C0_A0_P2_out" dir="out" link="Link10" />
+            </Algorithm>
+            <Algorithm name="EQ1940DualS1" friendlyname="2 Channel - Single Precision " cell="Gen Filter1 " location="{X=300, Y=220} " Growth="1 " GrowthB="0">
+                <Link pin="I_C40_A0_P1_in" dir="in" link="Link9" />
+                <Link pin="I_C40_A0_P2_in" dir="in" link="Link10" />
+                <Link pin="O_C40_A0_P3_out" dir="out" link="Link4" />
+                <Link pin="O_C40_A0_P4_out" dir="out" link="Link5" />
+            </Algorithm>
+            <Algorithm name="SingleCtrlMixer19401" friendlyname="Signal MixerC " cell="Mg1 " location="{X=334, Y=363} " Growth="2 " GrowthB="0">
+                <Link pin="I_C58_A0_P2_in" dir="in" link="Link9" />
+                <Link pin="I_C58_A0_P3_in" dir="in" link="Link10" />
+                <Link pin="O_C58_A0_P1_out" dir="out" link="Link6" />
+            </Algorithm>
+            <Algorithm name="MultCtrlDelGrowAlg1" friendlyname="Del_Grow " cell="DELAY_CH_1 " location="{X=552, Y=209} " Growth="1 " GrowthB="0">
+                <Link pin="I_C15_A0_P1_in" dir="in" link="Link4" />
+                <Link pin="O_C15_A0_P2_out" dir="out" link="Link1" />
+            </Algorithm>
+            <Algorithm name="MultCtrlDelGrowAlg2" friendlyname="Del_Grow " cell="DELAY_CH_2 " location="{X=559, Y=294} " Growth="1 " GrowthB="0">
+                <Link pin="I_C18_A0_P1_in" dir="in" link="Link5" />
+                <Link pin="O_C18_A0_P2_out" dir="out" link="Link0" />
+            </Algorithm>
+            <Algorithm name="EQ1940SingleS1" friendlyname="1 Channel - Single Precision " cell="Gen Filter2 " location="{X=414, Y=366} " Growth="1 " GrowthB="0">
+                <Link pin="I_C101_A0_P1_in" dir="in" link="Link6" />
+                <Link pin="O_C101_A0_P2_out" dir="out" link="Link7" />
+            </Algorithm>
+            <Algorithm name="ICSigma100Out2" friendlyname="170x\140x output " cell="Output2 " location="{X=701, Y=316.5} " Growth="0 " GrowthB="0">
+                <Link pin="I_C13_A0_P1_in" dir="in" link="Link0" />
+            </Algorithm>
+            <Algorithm name="ICSigma100Out1" friendlyname="170x\140x output " cell="Output1 " location="{X=698, Y=227.5} " Growth="0 " GrowthB="0">
+                <Link pin="I_C11_A0_P1_in" dir="in" link="Link1" />
+            </Algorithm>
+            <Algorithm name="Gain1940AlgNS2" friendlyname="Gain (no slew) " cell="GAIN_SUB " location="{X=517, Y=389} " Growth="0 " GrowthB="0">
+                <Link pin="I_C71_A0_P1_in" dir="in" link="Link7" />
+                <Link pin="O_C71_A0_P2_out" dir="out" link="Link2" />
+            </Algorithm>
+            <Algorithm name="SWGain1940DBAlg1" friendlyname="Gain (RC Slew) " cell="VOL_SUB " location="{X=632, Y=374} " Growth="1 " GrowthB="0">
+                <Link pin="I_C81_A0_P1_in" dir="in" link="Link2" />
+                <Link pin="O_C81_A0_P2_out" dir="out" link="Link3" />
+            </Algorithm>
+            <Algorithm name="MultCtrlDelGrowAlg3" friendlyname="Del_Grow " cell="DELAY_SUB " location="{X=758, Y=388} " Growth="1 " GrowthB="0">
+                <Link pin="I_C21_A0_P1_in" dir="in" link="Link3" />
+                <Link pin="O_C21_A0_P2_out" dir="out" link="Link8" />
+            </Algorithm>
+            <Algorithm name="ICSigma100Out3" friendlyname="170x\140x output " cell="Output2_2 " location="{X=904, Y=390.5} " Growth="0 " GrowthB="0">
+                <Link pin="I_C24_A0_P1_in" dir="in" link="Link8" />
+            </Algorithm>
+            <Algorithm name="ICSigma100Out4" friendlyname="170x\140x output " cell="Output2_3 " location="{X=907, Y=443.5} " Growth="0 " GrowthB="0">
+                <Link pin="I_C26_A0_P1_in" dir="in" link="Link8" />
+            </Algorithm>
+        </Schematic>
+    </IC>
+</NetList>

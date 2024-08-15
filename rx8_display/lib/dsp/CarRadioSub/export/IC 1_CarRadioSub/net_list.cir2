@@ -1,0 +1,13 @@
+0 ICSigma100In1 O_C0_A0_P1_out Link9 O_C0_A0_P2_out Link10
+1 EQ1940DualS1 I_C40_A0_P1_in Link9 I_C40_A0_P2_in Link10 O_C40_A0_P3_out Link4 O_C40_A0_P4_out Link5
+2 SingleCtrlMixer19401 I_C58_A0_P2_in Link9 I_C58_A0_P3_in Link10 O_C58_A0_P1_out Link6
+3 MultCtrlDelGrowAlg1 I_C15_A0_P1_in Link4 O_C15_A0_P2_out Link1
+4 MultCtrlDelGrowAlg2 I_C18_A0_P1_in Link5 O_C18_A0_P2_out Link0
+5 EQ1940SingleS1 I_C101_A0_P1_in Link6 O_C101_A0_P2_out Link7
+6 ICSigma100Out2 I_C13_A0_P1_in Link0
+7 ICSigma100Out1 I_C11_A0_P1_in Link1
+8 Gain1940AlgNS2 I_C71_A0_P1_in Link7 O_C71_A0_P2_out Link2
+9 SWGain1940DBAlg1 I_C81_A0_P1_in Link2 O_C81_A0_P2_out Link3
+10 MultCtrlDelGrowAlg3 I_C21_A0_P1_in Link3 O_C21_A0_P2_out Link8
+11 ICSigma100Out3 I_C24_A0_P1_in Link8
+12 ICSigma100Out4 I_C26_A0_P1_in Link8

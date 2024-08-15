@@ -4,6 +4,8 @@
 
 #define hazardBacklight 9
 
+#define dspWriteProtect 11
+
 #define footBacklight 12
 
 #define acAmpTX 16

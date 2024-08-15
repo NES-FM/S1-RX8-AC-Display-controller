@@ -7,6 +7,7 @@ display disp;
 clock time;
 backlightLedManager backlight;
 espComm esp( Serial3 );
+dsp sub_rear_dsp( dspWriteProtect );
 
 midsectionIcons midIcons;
 menu mainMenu;
@@ -17,11 +18,14 @@ float motor_temp = 100;
 
 void setup() {
     logger_init();
+    Wire.begin();
+
     buttons.init();
     time.init();
     ac.init();
     disp.init();
     esp.init();
+    sub_rear_dsp.init();
 
     backlight.registerBackgroundLed( new digitalBacklightLed( footBacklight ) );
     backlight.registerBackgroundLed( new digitalBacklightLed( hazardBacklight ) );
@@ -100,6 +104,8 @@ void loop() {
     backlight.tick();
 
     esp.tick();
+
+    sub_rear_dsp.tick();
 }
 
 void longButtonAction( btn_enum longButton ) {
