@@ -16,6 +16,8 @@ class buttonPanel {
 
     buttonState lastTickButtonState;
 
+    static String btn_enum_to_str( btn_enum in );
+
   private:
 #define BUTTON_PANEL_BUTTONS_INTERVAL 10
     unsigned long last_get_buttons = 0;
@@ -24,8 +26,6 @@ class buttonPanel {
     void checkTempRotation();
     void checkPushedButton();
     void checkMatrixCycle();
-
-    String btn_enum_to_str( btn_enum in );
 
     bool _allow = true;
 

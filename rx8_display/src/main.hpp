@@ -13,12 +13,13 @@
 #include "confMenu.hpp"
 #include "display.hpp"
 #include "espComm.hpp"
-#include "menu.hpp"
+#include "mainMenu.hpp"
+#include "subVolMenu.hpp"
 #include "dsp.hpp"
 
 // void shortButtonAction( btn_enum shortButton );
 void longButtonAction( btn_enum longButton );
-void midsectionHandler();
-void execute_command( String cmd );
+
+void toggleMenu( baseMenu* newMenu );
 
 float getBatVolt();

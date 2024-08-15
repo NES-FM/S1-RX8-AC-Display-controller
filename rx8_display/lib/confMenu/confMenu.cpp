@@ -38,45 +38,36 @@ void confMenu::shortButtonPress( btn_enum shortButton ) {
     }
 }
 
-// TODO: Implement menu long button press
-void confMenu::longButtonPress( btn_enum longButton ) { deactivate(); }
-
 void confMenu::changeRotary( int fan, int temp ) {
     relValue += fan;
     relValue += temp;
 }
 
+void confMenu::setPage( int page_num ) {
+    if ( page_num < 0 )
+        page_num = num_el_in_conf_pages - 1;
+    else if ( page_num >= num_el_in_conf_pages )
+        page_num = 0;
+    _cur_page = page_num;
+}
+
 void confMenu::activate() {
-    confMode = true;
+    baseMenu::activate();
     current_page = 0;
     relValue = 0;
     enter = false;
-    mainMenu = true;
+    confRootMenu = true;
     midIcons.Dolby = true;
 }
 
-// TODO: ConfMenu Deactivate
-void confMenu::deactivate() { confMode = false; }
 
-void confMenu::menuTick() {
-    if ( mainMenu ) {
+String confMenu::draw() {
+    String outputText;
+    if ( confRootMenu ) {
         if ( relValue > 0 )
-            current_page++;
+            next();
         else if ( relValue < 0 )
-            current_page--;
-
-        if ( current_page == 255 )
-            current_page = num_el_in_conf_pages - 1;
-        else if ( current_page >= conf_pages_size )
-            current_page = 0;
-
-        while ( !conf_pages[current_page] ) {
-            current_page++;
-            if ( current_page == 255 )
-                current_page = num_el_in_conf_pages - 1;
-            else if ( current_page >= conf_pages_size )
-                current_page = 0;
-        }
+            previous();
 
         outputText = conf_pages[current_page]->menuName;
     } else {
@@ -84,8 +75,8 @@ void confMenu::menuTick() {
         page->changeValue( relValue );
         if ( enter ) {
             if ( page->pressEnter() ) {
-                mainMenu = true;
-                menuTick();
+                confRootMenu = true;
+                outputText = draw(); // Draw root menu instead, as page wants to exit
                 goto end;
             }
         }
@@ -95,4 +86,5 @@ void confMenu::menuTick() {
 end:
     relValue = 0;
     enter = false;
+    return outputText;
 }

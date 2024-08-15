@@ -1,6 +1,8 @@
 #pragma once
 #include <Arduino.h>
 
+#include "baseMenu.hpp"
+
 #include "clock.hpp"
 #include "data_types.h"
 #include "logger.h"
@@ -16,25 +18,19 @@ class confPage {
   private:
 };
 
-class confMenu {
+class confMenu : public baseMenu {
   public:
     void registerPage( confPage *item );
 
-    void activate();
-    void deactivate();
+    void activate() override;
 
-    void menuTick();
+    void shortButtonPress( btn_enum shortButton ) override;
+    void changeRotary( int fan, int temp ) override;
 
-    void shortButtonPress( btn_enum shortButton );
-    void longButtonPress( btn_enum longButton );
-    void changeRotary( int fan, int temp );
-
-    bool confMode = false;
+    void setPage( int page_num ) override;
+    String draw() override;
+    
     bool twentyFourHour = true;
-    bool displayChanged = false;
-    acShow icons;
-    midsectionIcons midIcons;
-    String outputText;
 
   private:
     const static uint8_t conf_pages_size = 10;
@@ -43,5 +39,5 @@ class confMenu {
     uint8_t current_page = 0;
     int relValue = 0;
     bool enter = false;
-    bool mainMenu = true;
+    bool confRootMenu = true;
 };

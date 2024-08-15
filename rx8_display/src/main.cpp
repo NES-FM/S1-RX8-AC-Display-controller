@@ -1,7 +1,6 @@
 #include "main.hpp"
 
 buttonPanel buttons;
-confMenu conf;
 acAmp ac;
 display disp;
 clock time;
@@ -10,7 +9,11 @@ espComm esp( Serial3 );
 dsp sub_rear_dsp( dspWriteProtect );
 
 midsectionIcons midIcons;
-menu mainMenu;
+
+mainMenu_c mainMenu;
+confMenu conf;
+subVolMenu sub;
+baseMenu* activeMenu;
 
 Smoothed<double> bat_volt;
 
@@ -31,9 +34,15 @@ void setup() {
     backlight.registerBackgroundLed( new digitalBacklightLed( hazardBacklight ) );
     backlight.init();
 
-    mainMenu.registerPage( new menuPage() ); // Set Page 0 to a dummy page
-    mainMenu.registerPage( new value_func_page( "BAT", getBatVolt, "V", 1 ) );
-    mainMenu.registerPage( new value_ptr_page( "TMP", &motor_temp, "C", 1 ) );
+    mainMenu.registerPage( new mainMenuPage() ); // Set Page 0 to a dummy page
+    mainMenu.bat_page = new mainMenuFuncPage( "BAT", getBatVolt, "V", 1 );
+    mainMenu.registerPage( mainMenu.bat_page );
+    mainMenu.temp_page = new mainMenuPtrPage( "TMP", &motor_temp, "C", 1 );
+    mainMenu.registerPage( mainMenu.temp_page );
+
+    activeMenu = &mainMenu;
+
+    sub._dsp = &sub_rear_dsp;
 
     bat_volt.begin( SMOOTHED_AVERAGE, 10 );
 }
@@ -44,23 +53,23 @@ void loop() {
 
     // Get State of Center Button Panel
     buttons.tick();
-    if ( conf.confMode ) {
-        conf.shortButtonPress( buttons.lastTickButtonState.shortPushButton );
-        conf.longButtonPress( buttons.lastTickButtonState.longPushButton );
-        conf.changeRotary( buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation );
-        buttons.allow();
-    } else {
+    longButtonAction( buttons.lastTickButtonState.longPushButton );
+
+    if (mainMenu.isActive()) {
         ac.shortButtonPress( buttons.lastTickButtonState.shortPushButton );
-        longButtonAction( buttons.lastTickButtonState.longPushButton );
         ac.changeRotary( buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation );
 
         // Send Button data to AC
         if ( ac.send() ) // If sent and not in interval
             buttons.allow();
+    } else {
+        activeMenu->shortButtonPress( buttons.lastTickButtonState.shortPushButton );
+        activeMenu->changeRotary( buttons.lastTickButtonState.fanRotation, buttons.lastTickButtonState.tempRotation );
+        buttons.allow();
     }
 
     // Get Time
-    time.tick( conf.twentyFourHour, conf.confMode );
+    time.tick( conf.twentyFourHour, conf.isActive() );
 
     // Serial Data
     // execute_command(logger_tick());
@@ -69,66 +78,51 @@ void loop() {
     buttons.setLeds( ac.iconsLeds );
 
     // Set Display
-    if ( !conf.confMode ) {
-        if ( ac.displayChanged || time.t.minuteChange ) {
-            disp.setAcIcons( ac.iconsLeds );
-            disp.setTime( time.t );
+    if ( time.t.minuteChange || activeMenu->displayChanged() || (mainMenu.isActive() && ac.displayChanged)) {
+        if (mainMenu.isActive()) disp.setAcIcons( ac.iconsLeds );
+        else disp.setAcIcons( activeMenu->icons );
 
-            midsectionHandler();
-            disp.setMidIcons( midIcons );
+        disp.setTime( time.t );
 
-            disp.sendIcons();
-            disp.sendSevenSeg();
+        disp.writeToCharDisp( activeMenu->draw() );
+        disp.setMidIcons( activeMenu->midIcons );
 
-            ac.displayChanged = false;
-            time.t.minuteChange = false;
-        }
-    } else {
-        conf.menuTick();
-        if ( conf.displayChanged || time.t.minuteChange ) {
-            disp.setAcIcons( conf.icons );
-            disp.setMidIcons( conf.midIcons );
-            disp.setTime( time.t );
+        disp.sendIcons();
+        disp.sendSevenSeg();
 
-            disp.writeToCharDisp( conf.outputText );
-
-            disp.sendIcons();
-            disp.sendSevenSeg();
-
-            conf.displayChanged = false;
-            time.t.minuteChange = false;
-        }
+        ac.displayChanged = false;
+        time.t.minuteChange = false;
     }
 
-    // Setting backlight
+    // Others
     backlight.tick();
-
     esp.tick();
-
     sub_rear_dsp.tick();
 }
 
 void longButtonAction( btn_enum longButton ) {
+    if (longButton != btn_enum::no_button) logln("longButtonAction %s", buttonPanel::btn_enum_to_str(longButton).c_str());
     switch ( longButton ) {
     case Auto:
         ac.toggleAmbientTemp();
         break;
     case Mode:
-        conf.activate();
+        toggleMenu(&conf);
         break;
     case AC:
-        mainMenu.next();
+        activeMenu->next();
         break;
     case frontDemist:
-        mainMenu.previous();
+        activeMenu->previous();
         break;
     case rearDemist:
-        mainMenu.next();
+        activeMenu->next();
         break;
     case AirSource:
-        mainMenu.previous();
+        activeMenu->previous();
         break;
     case Off:
+        toggleMenu(&sub);
         break;
     default:
         break;
@@ -136,40 +130,20 @@ void longButtonAction( btn_enum longButton ) {
     buttons.lastTickButtonState.longPushButton = no_button;
 }
 
-unsigned long lastMidsectionMillis = 0;
-
-void midsectionHandler() {
-    if ( millis() - lastMidsectionMillis > 300 ) {
-        midIcons.mid_section_colon = true;
-
-        bat_volt.add( (double)analogRead( ignitionVoltage ) *
-                      0.01487643158529234 ); // Map from 0-1024 to 0-15   :    12.34 real => 12.0-12.3 measured
-
-        if ( mainMenu.cur_page_num() == 0 ) {
-            midIcons.Dolby = false;
-
-            if ( getBatVolt() > 13.5 ) { // Motor Running
-                motor_temp = 100;        // TODO: Get motor temperature via canbus
-
-                if ( motor_temp <= 90 ) { // Motor Cold
-                    disp.writeToCharDisp( mainMenu.drawPage( 2 ) );
-                } else { // Motor Hot
-                    midIcons.mid_section_colon = false;
-                    disp.writeToCharDisp( "Mazda RX-8" ); // TODO: Calculate fuel consumption
-                }
-            } else { // Motor Off
-                disp.writeToCharDisp( mainMenu.drawPage( 1 ) );
-            }
-        } else {
-            midIcons.Dolby = true;
-            disp.writeToCharDisp( mainMenu.draw() );
-        }
-
-        lastMidsectionMillis = millis();
+void toggleMenu( baseMenu *newMenu ) {
+    
+    if (newMenu->isActive()) {
+        newMenu->deactivate();
+        activeMenu = &mainMenu;
+    } else {
+        activeMenu->deactivate();
+        activeMenu = newMenu;
     }
+    
+    activeMenu->activate();
 }
 
-void execute_command( String cmd ) {
+/*void execute_command( String cmd ) {
     cmd.trim();
     // logln("Parsing Command: %s", command.c_str());
 
@@ -207,6 +181,10 @@ void execute_command( String cmd ) {
         out += "Executing command " + cmd + " is currently not implemented!"; // TODO commands
     }
     logln( "%s", cmd.c_str() );
-}
+}*/
 
-float getBatVolt() { return bat_volt.get(); }
+float getBatVolt() { 
+    bat_volt.add( (double)analogRead( ignitionVoltage ) *
+                      0.01487643158529234 ); // Map from 0-1024 to 0-15   :    12.34 real => 12.0-12.3 measured
+    return bat_volt.get(); 
+}
